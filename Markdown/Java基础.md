@@ -2,7 +2,7 @@
 
 # JVM内存模型
 
-![img](https://pic2.zhimg.com/80/v2-4face8109e0d52ef5894c41c69e4ec6b_720w.jpg?source=1940ef5c)
+![1](C:/Users/blank/Desktop/1.jpg)
 
 ## Java Virtual Machine 的好处
 
