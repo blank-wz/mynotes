@@ -1,0 +1,468 @@
+# 1. 函数式接口
+
+## 1.1 定义
+
+只有一个抽象方法的接口, 称之为函数式接口, 可以使用注解 **@FunctionalInterface** 修饰, 可以检查是否是函数式接口
+
+
+
+# 2. Lambda表达式
+
+````java
+public interface Calculator {
+    double sum(int a, int b);
+}
+
+public class Demo01 {
+    public static void main(String[] args) {
+        method((x, y) -> x + y);
+        // Lambda 表达式: (x, y) -> x + y
+        // method 方法需要一个Calculator接口类型的参数
+        // Lambda 表达式就是充当了Calculator接口类型的参数
+        // 初步理解
+        // 1. Lambda 表达式前面的小括号,其实就是接口抽象方法的小括号
+        // 2. 箭头代表拿着小括号的数据做什么事情, 就一个指向的动作
+        // 3. 箭头后面就代表拿到了参数之后做什么事情
+        // Lamda 表达式的语义本身就代表了怎么做这件事, 没有对象的概念在里面 (更加简单直观)
+    }
+
+    public static void method(Calculator calculator) {
+        double sum = calculator.sum(100, 200);
+        System.out.println("结果是: " + sum);
+    }
+}
+````
+
+## 2.1 条件
+
++ Lambda 表达式一定要有函数式接口的推断环境
+  1. 要么通过方法的参数类型来确定是哪个函数式接口
+  2. 要么通过赋值操作来确定是哪个函数式接口
+
+
+
+## 2.2 基础语法
+
++ Java8中引入了一个新的操作符 "->", 该操作符称为箭头操作符或Lambda操作符, 箭头操作符将Lambda表达式拆分成两部分:
+  + 左侧: Lambda 表达式的参数列表
+  + 右侧: Lambda 表达式中所需执行的功能, 即Lambda体
+
++ 语法格式1: 无参数, 无返回值
+
+  ```` java
+  // () -> System.out.println("Hello Lambda!");
+  
+  // 举例
+  public class LambdaDemo1 {
+      @Test
+      public void demo1() {
+          [final] int num = 0; // JDK1.7前,必须是final,JDK1.8默认加上
+          
+          Runnable r = new Runnable() {
+              @Override
+              public void run() {
+                  System.out.println("Hello Lambda!");
+              }
+          };
+          r.run();
+          
+          // Lambda 简写为
+          Runnable r1 = () -> System.out.println("Hello Lambda!");
+          r1.run();
+      }
+  }
+  ````
+
++ 语法格式2.1: 有一个参数, 无返回值
+
+  ````java
+  // (o) -> System.out.println(o)
+  
+  // 举例
+  public class LambdaDemo2 {
+      public static void main(String[] args) {
+          Consumer con = new Consumer() {
+              @Override
+              public void accept(Object o) {
+                  System.out.println(o);
+              }
+          };
+          con.accept("我不是Lambda");
+  		
+          // Lambda 简写
+          Consumer con1 = (o) -> System.out.println(o);
+          con1.accept("我是Lambda");
+      }
+  }
+  ````
+
++ 语法格式2.2: 只有一个参数,无返回值, () 可以不写
+
+  ````java
+  // o -> System.out.println(o)
+  ````
+
++ 语法格式3: 有两个参数, 且Lambda体中多条语句
+
+  ````java
+  Comparator<Integer> com1 = (o1, o2) -> {
+              System.out.println("多个参数,有返回值的Lambda");
+              return Integer.compare(o1, o2);
+          };
+  
+  // 举例
+  public class LambdaDemo3 {
+      public static void main(String[] args) {
+          Comparator<Integer> com = new Comparator<Integer>() {
+              @Override
+              public int compare(Integer o1, Integer o2) {
+                  System.out.println("多个参数,有返回值");
+                  return Integer.compare(o1, o2);
+              }
+          };
+          System.out.println(com.compare(1, 2));
+  		
+          // Lambda 简写
+          Comparator<Integer> com1 = (o1, o2) -> {
+              System.out.println("多个参数,有返回值的Lambda");
+              return Integer.compare(o1, o2);
+          };
+          System.out.println(com.compare(1, 2));
+      }
+  }
+  ````
+
++ 语法格式4: 有返回值, 若 Lambda 体中只有一条语句, return 和 大括号都可以省略不写
+
+  ````Java
+  Comparator<Integer> com1 = (o1, o2) -> Integer.compare(o1, o2);
+  ````
+
++ 语法格式5: Lambda 表达式参数列表的参数列表的数据类型可以省略不写,因为JVM编译器通过上下文推断出数据类型, 即**"类型推断"**
+
+  ````Java
+  Comparator<Integer> com = (Integer x, Integer y) -> Integer.compare(x, y);
+  
+  // 简化:去掉数据类型有JVM执行类型推断
+  Comparator<Integer> com = (x, y) -> Integer.compare(x, y);
+  
+  // JDK1.8之后
+  // 拓展1: 
+  List<String> list = new ArrayList<String>();
+  List<String> list = new ArrayList<>(); // 类型推断
+  
+  // 拓展2:
+  show(new HashMap<>()); // 类型推断
+  public void show(Map<String, Integer> map) {
+      ...
+  } 
+  ````
+
+  
+
+## 2.3 总结
+
+上联: **左右遇一括号省**	左边省包参数的小括号, 右边省包方法体的大括号 (有返回值可省 return)
+
+下联: **左侧推断类型省**	
+
+横批: 能省则省
+
+
+
+# 3. Java内置四大核心函数式接口
+
+| 函数式接口                   | 参数类型 | 返回类型 | 用途                                                         |
+| ---------------------------- | -------- | -------- | ------------------------------------------------------------ |
+| Consumer<T> <br>消费型接口   | T        | void     | 对类型为T的对象应用操作,包含方法: <br>void accept(T t)       |
+| Supplier<T><br>供给型接口    | 无       | T        | 返回类型为T的对象,包含方法:<br>T get()                       |
+| Function<T, R><br>函数型接口 | T        | R        | 对类型为T的对象应用操作,并返回结果.结果是R类型对象,包含方法:<br>R apply(T t) |
+| Predicate<T><br>断定型接口   | T        | boolean  | 确定类型为T的对象是否满足某约束,并返回Boolean值,包含方法:<br>boolean test(T t) |
+
+
+
+## 3.1 Consumer 消费型接口
+
+````java
+// Consumer 消费型接口
+@Test
+public void consumer_() {
+	happy(10000.0, (money) -> System.out.println("我消费了" + money + "元"));
+}
+
+public void happy(double money, Consumer<Double> con) {
+	con.accept(money);
+}
+````
+
+
+
+ ## 3.2 Supplier<T> 供给型接口
+
+````java
+// Supplier 供给型接口
+@Test
+public void supplier_() {
+    List<Integer> list = getNumList(10, () -> (int) (Math.random() * 100));
+    System.out.println(list);
+}
+public List<Integer> getNumList(int num, Supplier<Integer> supplier) {
+    List<Integer> list = new ArrayList<>();
+    for (int i = 0; i < num; i++) {
+        int n = supplier.get();
+        list.add(n);
+    }
+    return list;
+}
+````
+
+
+
+
+
+## 3.3 Function<T, R> 函数型接口
+
+````java
+// Function 函数型接口
+@Test
+public void function_() {
+    String newStr = strHandler("\t\t\t 你好世界", (String str) -> {
+        return str.trim();
+    });
+    System.out.println(newStr);
+    String newStr1 = strHandler("abcd", (str) -> {
+        return str.toUpperCase();
+    });
+    System.out.println(newStr1);
+    String newStr2 = strHandler("你好Lambda", str -> str.substring(2, 8));
+    System.out.println(newStr2);
+}
+public String strHandler(String str, Function<String, String> fun) {
+    return fun.apply(str);
+}
+````
+
+
+
+## 3.4 Predicate<T> 断定型接口
+
+````java
+// Predicate 断定型接口
+@Test
+public void predicate_() {
+    List<Integer> list = new ArrayList<>();
+    Collections.addAll(list, 2, 34, 52, 567, 465, 99, 34, 3);
+    List<Integer> newList = filterInteger(list, number -> number > 90);
+    System.out.println(newList);
+}
+public List<Integer> filterInteger(List<Integer> list, Predicate<Integer> pre) {
+    List<Integer> newList = new ArrayList<>();
+    for (Integer integer : list) {
+        if (pre.test(integer)) {
+            newList.add(integer);
+        }
+    }
+    return newList;
+}
+````
+
+
+
+
+
+# 4. 方法引用与构造器引用
+
+````java
+// 在某些场景下, Lamda表达式要做的事情, 其实在另外一个地方已经写过
+// 那么此时如果通过Lambda表达式重复编写相同的代码, 就是浪费
+// 那么如何才能复用已经存在的方法逻辑
+
+// 如果Lambda表达式需要做的事情, 在另外一个类中已经做过了, 那么就可以直接拿过来替换Lambda
+````
+
+## 4.1 方法引用
+
++ 若 Lambda 体重的内容有方法已经实现了, 我们可以使用 "方法引用"
+
+  (可以理解为方法引用是 Lambda 表达式的另外一种表现形式)
+
++ 主要有三种语法格式
+
+  + 对象 :: 实例方法
+  + 类 :: 静态方法名
+  + 类 :: 实例方法
+
++ 注意:
+
+  1. Lambda 体中调用方法的参数列表与返回值类型, 要与函数式接口中抽象方法的参数列表和返回值保持一致!
+  2. 若 Lambda 参数列表中的第一参数实例方法的调用者, 第二个参数是实例方法的参数时, 可以使用 ClassName :: method
+
+
+
+## 4.2 构造器引用
+
++ 格式
+
+  ClassName :: new
+
++ 注意:
+
+  需要调用的构造器的参数列表与函数式接口中的抽象方法的参数列表保持一致
+
+
+
+## 4.3 数组引用
+
++ 格式
+
+  Type[] :: new
+
+
+
+
+
+# 5. Stream API
+
+## 5.1 定义
+
+流 (Stream) 是数据渠道, 用于操作数据源 (集合, 数组等) 所产生的元素序列
+
+**集合讲的是数据, 流讲的是计算**
+
+注意:
+
+1. Stream 自己不会存储元素
+2. Stream 不会改变源对象, 相反, 他们会返回一个持有结果的新 Stream
+3. Stream 操作是延迟执行的, 这意味着他们会等到需要结果的时候才执行
+
+
+
+## 5.2 Stream 的操作三个步骤
+
+### 1. 创建 Stream
+
+   一个数据源 (如: 集合, 数组), 获取一个流
+
+   ````java
+   // 创建 Stream
+   @Test
+   public void createStream() {
+       // 1. 根据集合获取流 --- 可以通过 Collection 系列集合提供的 stream() 或 parallelStream()
+       List<String> list = new ArrayList<>();
+       Stream<String> stream1 = list.stream();
+       // 2.1 根据数组获取流 --- 通过 Arrays 中的静态方法 stream() 获取数组流
+       String[] strings = new String[10];
+       Stream<String> stream2 = Arrays.stream(strings);
+       // 2.2 根据数组获取流 --- 通过 Stream 类中的静态方法 of() 获取数组的流
+       Stream<String> stream3 = Stream.of("aa", "bb", "cc");
+       // 3. 创建无限流
+       // 迭代
+       Stream<Integer> stream4 = Stream.iterat;
+       stream4.limit(10).forEach(System.out::println);
+       // 生成
+       Stream.generate(Math::random)
+               .limit(10)
+               .forEach(System.out::println);
+   }
+   ````
+
+   
+
+### 2. 中间操作
+
+   一个中间操作链, 对数据源的数据进行处理
+
+   + 多个中间操作可以连接起来形成一个流水线, 除非流水线上触发终止操作, 否则中间操作不会执行任何的处理!
+   + 终止操作时一次性全部处理, 称为 "惰性求值"
+
+   **2.1 筛选与切片**
+
+   | 方法                | 描述                                                         |
+   | ------------------- | ------------------------------------------------------------ |
+   | filter(Predicate p) | 接受 Lambda, 从流中排除某些元素                              |
+   | distinct()          | 筛选, 通过流所生成元素的 **hashCode() 和 equals()** 去除重复元素 |
+   | limit(long maxSize) | 截断流, 使其元素不超过给定数量                               |
+   | skip(long n)        | 跳过元素, 返回一个扔掉了前 n 个元素的流, 若流中元素不足 n 个, 则返回一个空流, 与 limit(n) 互补 |
+
+   ````java
+   @Test
+   public void middleAndEnd() {
+       List<Integer> list = Arrays.asList(11, 11, 22, 22, 5, 8, 86, 67, 79);
+       list.stream()
+               .filter(e -> {
+                   return e > 10;
+               })
+               .distinct()
+               .skip(2)
+               .limit(3)
+               .forEach(System.out::println);
+   }
+   ````
+
+   
+
+   **2.2 映射**
+
+   ````java
+   /*
+    * 获取流之后, 可以使用映射方法: map(用于转换的Lambda表达式)
+    * 映射, 就是将一个对象转换成为另一对象, 把老对象映射到新对象上
+    * 
+    * "赵丽颖, 98" 转换成	"98"	将一个长字符串转换成一个短字符串
+    * "98"        转换成     98	  将一个字符串转换成一个数字
+    */
+   ````
+
+   
+
+   
+
+   **2.3 排序**
+
+   ````java
+   
+   ````
+
+   
+
+### 3. 终止操作 (终端操作)
+
+   一个终止操作, 执行中间操作链, 并产生结果
+
+   ````java
+   // forEach(System.out::println);
+   ````
+
+   **查找与匹配**
+
+
+
+## 5.3 并发流
+
+### 1. 概念
+
+如果对流当中的元素, 使用多人同时处理, 这就是 "并发"
+
+如何才能获取 "并发流" (支持并发操作的流)
+
+.parallelStream()
+
+### 2. 注意事项:
+
++ 使用并发流操作的时候, 到底有几个人进行同时操作呢? 不用管, JDK 自己处理
++ 只要正确使用, 就不会出现多个人强盗同一个元素
++ 如果已经获取了一个普通的流, 那么只要再调用一下 parallel()方法也可会变成并发流
+
+
+
+### 3. 获取并发流
+
++ 直接获取并发流: .parallelStream()
++ 已经获取了普通流, 然后升级成为并发流: .stream().parallel()
+
+
+
+
+
+
+
