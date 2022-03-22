@@ -2,7 +2,7 @@
 
 # JVM内存模型
 
-![1](C:/Users/blank/Desktop/1.jpg)
+
 
 ## Java Virtual Machine 的好处
 
