@@ -94,8 +94,6 @@ public final native void wait(long timeout) throws InterruptedException;
 
 #### 5.1 定义
 
-![image-20210812153611461](C:\Users\blank\AppData\Roaming\Typora\typora-user-images\image-20210812153611461.png)
-
 
 
 #### 5.2 方法区内存溢出
@@ -540,8 +538,6 @@ public class Demo {
 
 # 数据库1 - MySQL
 
-![image-20210819150932249](C:\Users\blank\AppData\Roaming\Typora\typora-user-images\image-20210819150932249.png)
-
 
 
 
@@ -751,8 +747,6 @@ Redis保证一个事务中的所有命令要么都执行，要么都不执行(�
 
 ## Redis 主从复制
 
-![image-20210810171529548](C:\Users\blank\AppData\Roaming\Typora\typora-user-images\image-20210810171529548.png)
-
 
 
 1. 将redis01拷贝两份，例如
@@ -789,8 +783,6 @@ Redis保证一个事务中的所有命令要么都执行，要么都不执行(�
 ## Redis 集群高可用
 
 对于redis集群(Cluster),一般最少设置为6个节点,3个master,3个slave,其简易架构如下
-
-![image-20210810172242448](C:\Users\blank\AppData\Roaming\Typora\typora-user-images\image-20210810172242448.png)
 
 
 
