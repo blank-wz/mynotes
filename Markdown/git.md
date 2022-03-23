@@ -115,7 +115,7 @@
 | git checkout 分支名 | 切换分支                     |
 | git merge 分支名    | 把指定的分支合并到当前分支上 |
 
-![image-20211010221152169](C:\Users\blank\AppData\Roaming\Typora\typora-user-images\image-20211010221152169.png)
+![3](https://raw.githubusercontent.com/blank-wz/typoraimage/main/images/2022/03/23/6175833afb5a694ae54fa9b3f94eeada-3-819070.png)
 
 ## 3.1 查看分支
 
