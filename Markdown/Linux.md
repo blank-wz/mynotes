@@ -102,7 +102,7 @@ vim 具有程序编辑的能力, 可以看作是vi的增强版本,可以主动�
 
 ## 3. 各种模式的互相切换
 
-![image-20220305192743577](C:\Users\blank\AppData\Roaming\Typora\typora-user-images\image-20220305192743577.png)
+![2](https://raw.githubusercontent.com/blank-wz/typoraimage/main/images/2022/03/23/ae9a91db21271b6124b178c33f4db5ac-2-6d2657.png)
 
 
 
