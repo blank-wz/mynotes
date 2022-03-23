@@ -530,6 +530,10 @@ public class Demo {
 
 
 
+# 基础5 - IO
+
+![6](https://raw.githubusercontent.com/blank-wz/typoraimage/main/images/2022/03/23/0ec74a0c846616a4f9146e766dad5bc3-6-c9247b.png)
+
 
 
 

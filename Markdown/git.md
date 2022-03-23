@@ -219,13 +219,13 @@ blank@blank MINGW64 /e/GitDemo (master)
 
 ## 4.1 **团队协作**
 
-![image-20211010230508698](C:\Users\blank\AppData\Roaming\Typora\typora-user-images\image-20211010230508698.png)
+![4](https://raw.githubusercontent.com/blank-wz/typoraimage/main/images/2022/03/23/5ac429fb43432a461d9118f48c5a8e21-4-f75bd0.png)
 
 
 
 ## 4.2 **跨团队协作**
 
-![image-20211010230618781](C:\Users\blank\AppData\Roaming\Typora\typora-user-images\image-20211010230618781.png)
+![5](https://raw.githubusercontent.com/blank-wz/typoraimage/main/images/2022/03/23/ad25fd9faf94d0283da97a8178b844a6-5-4be3ef.png)
 
 
 
