@@ -1,5 +1,3 @@
-
-
 # JVM内存模型
 
 ![1](https://raw.githubusercontent.com/blank-wz/typoraimage/main/images/2022/03/22/1401832aa4fa7ee2a9bbfde8bc558940-1-0de2b8.jpg)
