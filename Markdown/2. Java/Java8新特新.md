@@ -375,7 +375,7 @@ public List<Integer> filterInteger(List<Integer> list, Predicate<Integer> pre) {
    + 多个中间操作可以连接起来形成一个流水线, 除非流水线上触发终止操作, 否则中间操作不会执行任何的处理!
    + 终止操作时一次性全部处理, 称为 "惰性求值"
 
-   **2.1 筛选与切片**
+   **① 筛选与切片**
 
    | 方法                | 描述                                                         |
    | ------------------- | ------------------------------------------------------------ |
@@ -401,7 +401,7 @@ public List<Integer> filterInteger(List<Integer> list, Predicate<Integer> pre) {
 
    
 
-   **2.2 映射**
+   **② 映射**
 
    ````java
    /*
@@ -417,7 +417,7 @@ public List<Integer> filterInteger(List<Integer> list, Predicate<Integer> pre) {
 
    
 
-   **2.3 排序**
+   **③ 排序**
 
    ````java
    
