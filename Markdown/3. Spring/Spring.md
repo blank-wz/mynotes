@@ -29,9 +29,9 @@
 
 
 
-## 1. Spring 注解 (Component, 依赖注入)
+## 3.1 Spring 注解 (Component, 依赖注入)
 
-### 1.1 @Component 注解
+### 3.1.1 @Component 注解
 
 1. 作用：用于把当前类的对象存入到spring容器中
 
@@ -51,7 +51,7 @@
 
    + @Controller：web层（表现层）
 
-### 1.2 依赖注入
+### 3.1.2 依赖注入
 
 1. **@Autowired**
    - 自动按照类型注入  **byType**，只要容器中有唯一一个bean对象类型和要注入的变量类型匹配，就可以注入成功
@@ -73,7 +73,7 @@
 
 
 
-## 2. Spring Bean 的生命周期
+## 3.2 Spring Bean 的生命周期
 
 Spring Bean的生命周期分为`四个阶段`和`多个扩展点`。扩展点又可以分为`影响多个Bean`和`影响单个Bean`
 
@@ -91,7 +91,7 @@ Spring Bean的生命周期分为`四个阶段`和`多个扩展点`。扩展点�
 
 
 
- ## 3. Spring Bean 的作用域
+ ## 3.3 Spring Bean 的作用域
 
 1. 单例对象 singleton
 

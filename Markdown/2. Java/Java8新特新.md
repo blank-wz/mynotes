@@ -1,4 +1,4 @@
-# 1. 函数式接口
+# 一, 函数式接口
 
 ## 1.1 定义
 
@@ -6,7 +6,7 @@
 
 
 
-# 2. Lambda表达式
+# 二, Lambda表达式
 
 ````java
 public interface Calculator {
@@ -170,7 +170,7 @@ public class Demo01 {
 
 
 
-# 3. Java内置四大核心函数式接口
+# 三, Java内置四大核心函数式接口
 
 | 函数式接口                   | 参数类型 | 返回类型 | 用途                                                         |
 | ---------------------------- | -------- | -------- | ------------------------------------------------------------ |
@@ -270,7 +270,7 @@ public List<Integer> filterInteger(List<Integer> list, Predicate<Integer> pre) {
 
 
 
-# 4. 方法引用与构造器引用
+# 四, 方法引用与构造器引用
 
 ````java
 // 在某些场景下, Lamda表达式要做的事情, 其实在另外一个地方已经写过
@@ -321,7 +321,7 @@ public List<Integer> filterInteger(List<Integer> list, Predicate<Integer> pre) {
 
 
 
-# 5. Stream API
+# 五, Stream API
 
 ## 5.1 定义
 
@@ -339,7 +339,7 @@ public List<Integer> filterInteger(List<Integer> list, Predicate<Integer> pre) {
 
 ## 5.2 Stream 的操作三个步骤
 
-### 1. 创建 Stream
+### 5.2.1 创建 Stream
 
    一个数据源 (如: 集合, 数组), 获取一个流
 
@@ -368,7 +368,7 @@ public List<Integer> filterInteger(List<Integer> list, Predicate<Integer> pre) {
 
    
 
-### 2. 中间操作
+### 5.2.2 中间操作
 
    一个中间操作链, 对数据源的数据进行处理
 
@@ -425,7 +425,7 @@ public List<Integer> filterInteger(List<Integer> list, Predicate<Integer> pre) {
 
    
 
-### 3. 终止操作 (终端操作)
+### 5.2.3 终止操作 (终端操作)
 
    一个终止操作, 执行中间操作链, 并产生结果
 
@@ -439,7 +439,7 @@ public List<Integer> filterInteger(List<Integer> list, Predicate<Integer> pre) {
 
 ## 5.3 并发流
 
-### 1. 概念
+### 5.3.1 概念
 
 如果对流当中的元素, 使用多人同时处理, 这就是 "并发"
 
@@ -447,7 +447,7 @@ public List<Integer> filterInteger(List<Integer> list, Predicate<Integer> pre) {
 
 .parallelStream()
 
-### 2. 注意事项:
+### 5.3.2 注意事项:
 
 + 使用并发流操作的时候, 到底有几个人进行同时操作呢? 不用管, JDK 自己处理
 + 只要正确使用, 就不会出现多个人强盗同一个元素
@@ -455,7 +455,7 @@ public List<Integer> filterInteger(List<Integer> list, Predicate<Integer> pre) {
 
 
 
-### 3. 获取并发流
+### 5.3.3 获取并发流
 
 + 直接获取并发流: .parallelStream()
 + 已经获取了普通流, 然后升级成为并发流: .stream().parallel()

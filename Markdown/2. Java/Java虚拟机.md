@@ -16,9 +16,9 @@
 
 
 
-### 1. 程序计数器 (Program Counter Register)
+### 2.1 程序计数器 (Program Counter Register)
 
-#### 1.1 定义和作用
+#### 定义和作用
 
 + Java 源代码 --> 二进制字节码(JVM指令) --> 程序计数器 --> 解释器 --> 机器码 --> CPU
 
@@ -30,9 +30,9 @@
 
 
 
-### 2. 虚拟机栈 (JVM Stacks)
+### 2.2 虚拟机栈 (JVM Stacks)
 
-#### 2.1 定义
+#### 2.2.1 定义
 
 栈: 线程运行时需要的内存空间 (-Xss size     Linux, macOS, Oracle 默认为 1024KB,Windows:depends on virtual memory)
 
@@ -42,12 +42,12 @@
 
 出栈: 释放栈帧的内存
 
-#### 2.2 栈内存溢出 (StackOverflowError)
+#### 2.2.2 栈内存溢出 (StackOverflowError)
 
 1. 栈帧过多 (例: 递归调用没有给合理的结束条件)
 2. 栈帧过大 (不容易出现, 一个栈大小在 1M 左右, 一个 int 才占4个字节)
 
-#### 2.3 线程运行诊断
+#### 2.2.3 线程运行诊断
 
 + 案例1: CPU 占用过高
 
@@ -60,7 +60,7 @@
 
 
 
-### 3. 本地方法栈 (Native Method Statics)
+### 2.3 本地方法栈 (Native Method Statics)
 
 不是由 Java 代码编写的代码, 由C/C++编写的本地方法, 从而 Java 可以调用这些本地方法间接的操作系统底层
 
@@ -74,28 +74,28 @@ public final native void wait(long timeout) throws InterruptedException;
 
 
 
-### 4. 堆 (Heap)
+### 2.4 堆 (Heap)
 
-#### 4.1 定义
+#### 2.4.1 定义
 
 + 通过 new 关键字, 创建对象都会使用堆内存
 + 特点
   1. 它是线程共享的, 堆中对象都需要考虑线程安全的问题
   2. 有垃圾回收机制
 
-#### 4.2 堆内存溢出 (OutOfMemoryError: Java heap space)
+#### 2.4.2 堆内存溢出 (OutOfMemoryError: Java heap space)
 
 对象被当做垃圾回收的条件 : 没有程序在使用
 
 
 
-### 5. 方法区
+### 2.5 方法区
 
-#### 5.1 定义
+#### 2.5.1 定义
 
 
 
-#### 5.2 方法区内存溢出
+#### 2.5.2 方法区内存溢出
 
 + JDK1.8 以前会导致永久代(**Permgen**)内存溢出
 
@@ -120,7 +120,7 @@ public final native void wait(long timeout) throws InterruptedException;
 
 
 
-#### 5.3 运行时常量池
+#### 2.5.3 运行时常量池
 
 + 常量池: 一张表, 虚拟机指令根据这张常量表找到要执行的类名, 方法名, 参数类型, 字面量等信息
 + 运行时常量池: 常量池是 *.class 文件中的, 当该类被加载, 它的常量池信息就会放入运行时常量池, 并把里面的符号地址变为真实地址
@@ -140,7 +140,7 @@ public class Demo {
 
 
 
-#### 5.4 StringTable 特性
+#### 2.5.4 StringTable 特性
 
 1. 常量池中的字符串仅是符号, 第一次用到时才变为对象
 2. 利用串池机制, 来避免重复创建字符串对象
