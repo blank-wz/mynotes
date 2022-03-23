@@ -1,160 +1,4 @@
-# JVM内存模型
-
-![1](https://raw.githubusercontent.com/blank-wz/typoraimage/main/images/2022/03/22/1401832aa4fa7ee2a9bbfde8bc558940-1-0de2b8.jpg)
-
-
-
-## Java Virtual Machine 的好处
-
-1. 实现跨平台
-2. 自动内存够管理, 垃圾回收功能
-3. 数组下标越界检查
-4. 多态
-
-
-
-
-
-## 内存结构
-
-### 1. 程序计数器 (Program Counter Register)
-
-#### 1.1 定义和作用
-
-+ Java 源代码 --> 二进制字节码(JVM指令) --> 程序计数器 --> 解释器 --> 机器码 --> CPU
-
-+ 作用: 记住下一条 JVM 指令的执行地址, 依赖于 CPU 的 **寄存器**
-
-+ 特点:
-  1. 线程私有 (每个线程都有自己的程序计数器)
-  2. 不存在内存溢出
-
-
-
-### 2. 虚拟机栈 (JVM Stacks)
-
-#### 2.1 定义
-
-栈: 线程运行时需要的内存空间 (-Xss size     Linux, macOS, Oracle 默认为 1024KB,Windows:depends on virtual memory)
-
-栈帧: 每个方法需要的内存 (如果方法内局部变量没有逃离方法的作用范围, 那么局部变量是线程安全的)
-
-每个线程只能有一个活动栈帧, 对应着当前正在执行的那个方法
-
-出栈: 释放栈帧的内存
-
-#### 2.2 栈内存溢出 (StackOverflowError)
-
-1. 栈帧过多 (例: 递归调用没有给合理的结束条件)
-2. 栈帧过大 (不容易出现, 一个栈大小在 1M 左右, 一个 int 才占4个字节)
-
-#### 2.3 线程运行诊断
-
-+ 案例1: CPU 占用过高
-
-  定位: 
-
-  1. 用 top 定位哪个进程对cpu占用过高
-  2. ps H -eo pid,**tid**,%cpu | grep 进程id (用ps命令进一步定位是那个线程引起的cpu占用过高)
-  3. jstack 进程id (可列出所有的线程)
-     + 可以根据线程id找到有问题的线程, 进一步定位到问题代码的源码行号 (需要将十进制的线程id换算成16进制去找)
-
-
-
-### 3. 本地方法栈 (Native Method Statics)
-
-不是由 Java 代码编写的代码, 由C/C++编写的本地方法, 从而 Java 可以调用这些本地方法间接的操作系统底层
-
-Object   native修饰的方法
-
-```
-protected native Object clone() throws CloneNotSupportedException;
-public final native void notify();
-public final native void wait(long timeout) throws InterruptedException;
-```
-
-
-
-### 4. 堆 (Heap)
-
-#### 4.1 定义
-
-+ 通过 new 关键字, 创建对象都会使用堆内存
-+ 特点
-  1. 它是线程共享的, 堆中对象都需要考虑线程安全的问题
-  2. 有垃圾回收机制
-
-#### 4.2 堆内存溢出 (OutOfMemoryError: Java heap space)
-
-对象被当做垃圾回收的条件 : 没有程序在使用
-
-
-
-### 5. 方法区
-
-#### 5.1 定义
-
-
-
-#### 5.2 方法区内存溢出
-
-+ JDK1.8 以前会导致永久代(**Permgen**)内存溢出
-
-  ```
-  -XX:MaxMetaspaceSize=8m
-  ```
-
-  
-
-+ JDK1.8 之后会导致元空间(**Metaspace**)内存溢出
-
-  ```
-  -XX:MaxMetaspaceSize=8m // 默认使用的是系统内存, 所以设置小一点可以暴露问题
-  ```
-
-
-
-场景 :
-
-+ spring  (cglib)
-+ mybatis
-
-
-
-#### 5.3 运行时常量池
-
-+ 常量池: 一张表, 虚拟机指令根据这张常量表找到要执行的类名, 方法名, 参数类型, 字面量等信息
-+ 运行时常量池: 常量池是 *.class 文件中的, 当该类被加载, 它的常量池信息就会放入运行时常量池, 并把里面的符号地址变为真实地址
-+ StringTable
-
-```java
-public class Demo {
-	String s1 = "a";
-	String s2 = "b";
-	String s3 = "ab";
-	String s4 = s1 + s2; // new StringBuilder().append("a").append("b").toString()  new String("ab")
-	String s5 = "a" + "b"; // javac 在编译期间优化, 结果已经在编译期间确定为 ab
-	System.out.println(s3 == s4); // false
-	System.out.println(s3 == s4); // true
-}
-```
-
-
-
-#### 5.4 StringTable 特性
-
-1. 常量池中的字符串仅是符号, 第一次用到时才变为对象
-2. 利用串池机制, 来避免重复创建字符串对象
-3. 字符串变量的拼接原理是 StringBuilder (JDK1.8)      在堆中
-4. 字符串常量的拼接原理是 编译器优化   在常量池中
-5. 可以使用 intern 方法, 主动将串池中还没有的字符串对象放入串池
-
-
-
-
-
-
-# 基础1 - API
+# 一, API
 
 
 
@@ -198,7 +42,7 @@ public class Demo {
 
 ##  
 
-# 基础2 - 集合
+# 二, 集合
 
 
 
@@ -381,7 +225,57 @@ public class Demo {
 
 
 
-# 基础3 - 多线程
+# 三, IO
+
+![6](https://raw.githubusercontent.com/blank-wz/typoraimage/main/images/2022/03/23/0ec74a0c846616a4f9146e766dad5bc3-6-c9247b.png)
+
+
+
+
+
+
+
+# 四, 反射
+
+
+
+## 1. 简介
+
+反射就是获取类的字节码文件，可以使我们在运行状态获取任何一个类的方法和属性。对于任意一个对象，都能够调用它的任意方法和属性
+
+
+
+## 2. 获取 Class 类对象的方式
+
+1. Class.forName("类的全限定名")
+2. 实例对象.getClass()
+3. 类名.class
+
+
+
+## 3. 反射创建实例的方式
+
++ Class 对象.newInstance()	创建实例,并执行无参构造
+  + 类比须有无参构造
+  + 无参构造访问权限要足够
+
+
+
+## 4. 获取类的定义信息
+
+
+
+
+
+## 5. 反射调用成员
+
+
+
+
+
+
+
+# 五, 多线程
 
 
 
@@ -395,7 +289,7 @@ public class Demo {
 
 1. newFixedThreadPool：创建固定大小的线程池，每次提交一个任务就创建一个线程，直到线程达到线程池的最大大小。线程池的大小一旦达到最大值就会保持不变，如果某个线程因为执行异常而结束，那么线程池会补充一个新线程。如果希望在服务器上使用线程池，建议使用 newFixedThreadPool方法来创建线程池，这样能获得更好的性能
 2. newSingleThreadExecutor：创建一个单线程的线程池，这个线程池只有一个线程在工作，也就是相当于单线程串行执行所有任务。如果这个唯一的线程因为异常结束，那么会有一个新的线程来替代它。此线程池保证所有任务的执行顺序按照任务的提交顺序执行
-3.  newCachedThreadPool：创建一个可缓存的线程池。如果线程池的大小超过了处理任务所需要的线程，那么就会回收部分空闲（60 秒不执行任务）的线程，当任务数增加时，此线程池又可以智能的添加新线程来处理任务。此线程池不会对线程池大小做限制，线程池大小完全依赖于操作系统（或者说 JVM）能够创建的最大线程大小
+3. newCachedThreadPool：创建一个可缓存的线程池。如果线程池的大小超过了处理任务所需要的线程，那么就会回收部分空闲（60 秒不执行任务）的线程，当任务数增加时，此线程池又可以智能的添加新线程来处理任务。此线程池不会对线程池大小做限制，线程池大小完全依赖于操作系统（或者说 JVM）能够创建的最大线程大小
 4. newScheduledThreadPool：创建一个大小无限的线程池。此线程池支持定时以及周期性执行任务的需求
 
 
@@ -436,58 +330,6 @@ public class Demo {
 3. 有序性
 
    即程序的执行顺序按照代码的先后顺序执行
-
-
-
-
-
-# 基础4 - 反射
-
-
-
-## 1. 简介
-
-反射就是获取类的字节码文件，可以使我们在运行状态获取任何一个类的方法和属性。对于任意一个对象，都能够调用它的任意方法和属性
-
-
-
-## 2. 获取 Class 类对象的方式
-
-1. Class.forName("类的全限定名")
-2. 实例对象.getClass()
-3. 类名.class
-
-
-
-## 3. 反射创建实例的方式
-
-+ Class 对象.newInstance()	创建实例,并执行无参构造
-  + 类比须有无参构造
-  + 无参构造访问权限要足够
-
-
-
-## 4. 获取类的定义信息
-
-
-
-
-
-## 5. 反射调用成员
-
-
-
-
-
-
-
-
-
-# 基础5 - IO
-
-![6](https://raw.githubusercontent.com/blank-wz/typoraimage/main/images/2022/03/23/0ec74a0c846616a4f9146e766dad5bc3-6-c9247b.png)
-
-
 
 
 
