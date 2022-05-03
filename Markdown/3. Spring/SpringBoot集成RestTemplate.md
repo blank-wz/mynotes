@@ -115,10 +115,10 @@ RestTemplate 是一个同步的 Web Http 客户端请求模板工具, 底层默�
 
 ````java
 // 性能优化
-// 底层执行引擎 HttpUrlConnection
+// 底层默认执行引擎 HttpUrlConnection
 RestTemplate template = new RestTemplate();
 
-// 底层执行引擎 Apache HttpComponents (HttpClient)
+// 底层执行引擎改用 Apache HttpComponents (HttpClient)
 RestTemplate template = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
 ````
 
