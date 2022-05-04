@@ -196,6 +196,8 @@ if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode()) {
 
 ## 4.1 MIME type
 
++ 详细介绍: https://www.w3school.com.cn/media/media_mimeref.asp
+
 + 含义 : Multipurpose Internet Mail Extensions 即多用途互联网邮件扩展类型
 
 + 组成
@@ -207,6 +209,7 @@ if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode()) {
   | Content-Transfer-Encoding | 编码格式     | 8bit, binary                                                 |
   | Content-Disposition       | 内容排列方式 | 上传文件时:<br/>Content-Disposition: form-data; name="fileName"; filename="C\Users\lenovo\Desktop\a.html"<br/>下载文件时需要设置:<br/>Content-Disposition: attachment; filename=URLEncoder.encode("xx.zip", "UTF-8") |
 
+  + png -- 服务器上的web容器(tomcat)通过后缀在 conf/web.xml 文件中找到对应的 mime-mapping --> 设置响应头 Content-Type 的值为 mine-type 的值
   + 网页form表单enctype可用的MIME类型 (Content-Type类型)
     1. application/x-www-form-urlencoded
     2. multipart/form-data
@@ -216,11 +219,110 @@ if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode()) {
 
 ## 4.2 发送application/x-www-form-urlencoded类型的请求
 
-
+````java
+/**
+ * 发送application/x-www-form-urlencoded类型的请求
+ */
+@Test
+public void testPost1() {
+    CloseableHttpClient closeableHttpClient = HttpClients.createDefault();
+    String urlStr = "https://www.baidu.com/";
+    
+    // 创建httppost对象
+    HttpPost httpPost = new HttpPost(urlStr);
+    
+    // 给post对象设置参数
+    httpPost.addHeader("Content-Type", "application/x-www-form-urlencode; charset=utf-
+    List<NameValuePair> list = new ArrayList<>();
+    list.add(new BasicNameValuePair("userName", "王大锤"));
+    list.add(new BasicNameValuePair("password", "mima"));
+    UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(list, Consts.UTF_8);
+    httpPost.setEntity(formEntity);
+                       
+    CloseableHttpResponse response = null;
+    try {
+        response = closeableHttpClient.execute(httpPost);
+        if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode()) {
+            HttpEntity entity = response.getEntity();
+            String entityStr = EntityUtils.toString(entity, StandardCharsets.UTF_8);
+            System.out.println(entityStr);
+            EntityUtils.consume(entity);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        if (closeableHttpClient != null) {
+            try {
+                closeableHttpClient.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (response != null) {
+            try {
+                response.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+````
 
 
 
 ## 4.3 发送application/json类型的请求
+
+````java
+/**
+ * 发送application/json类型的请求
+ */
+@Test
+public void testPost2() {
+    CloseableHttpClient closeableHttpClient = HttpClients.createDefault();
+    String urlStr = "https://www.baidu.com/";
+    // 创建httppost对象
+    HttpPost httpPost = new HttpPost(urlStr);
+    // string: 是一个json字符串
+    JSONObject jsonObject = new JSONObject();
+    jsonObject.put("userName", "王大锤");
+    jsonObject.put("password", "mima");
+    StringEntity stringEntity = new StringEntity(jsonObject.toString(), Consts.UTF_8)
+    // 也需要给entity设置一下内容类型
+    stringEntity.setContentType(new BasicHeader("Content-Type", "application/json"));
+    // 设置要给entity的编码
+    stringEntity.setContentEncoding(Consts.UTF_8.name());
+    // 给httpPost对象设置参数
+    httpPost.setEntity(stringEntity);
+    CloseableHttpResponse response = null;
+    try {
+        response = closeableHttpClient.execute(httpPost);
+        if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode()) {
+            HttpEntity entity = response.getEntity();
+            String entityStr = EntityUtils.toString(entity, StandardCharsets.UTF_8);
+            System.out.println(entityStr);
+            EntityUtils.consume(entity);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        if (closeableHttpClient != null) {
+            try {
+                closeableHttpClient.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (response != null) {
+            try {
+                response.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+````
 
 
 
