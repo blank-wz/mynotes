@@ -330,7 +330,64 @@ public void testPost2() {
 
 ## 4.4 发送multipart/form-data类型上传文件的请求
 
-
+````java
+/**
+ * 发送multipart/form-data类型上传文件的请求
+ */
+@Test
+public void testPost3() {
+    CloseableHttpClient closeableHttpClient = HttpClients.createDefault();
+    String urlStr = "https://www.baidu.com/";
+    // 创建httppost对象
+    HttpPost httpPost = new HttpPost(urlStr);
+    // 构造一个ContentBody的实现类对象
+    FileBody fileBody = new FileBody(new File("e:\\b.png"));
+    // 构造上传文件使用的entity
+    MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+    builder.setCharset(Consts.UTF_8); // 设置编码
+    builder.setContentType(ContentType.create("multipart/form-data", Consts.UTF_8));
+    builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE); // 设置浏览器模式
+    // 对于普通的表单字段如果含有中文的话, 不能通过addTextBody, 否则乱码
+    // 可以使用 addPart 里传 StringBody 并指定mimeType 和编码
+    StringBody stringBody = new StringBody("小明", ContentType.create("text/plain", Consts.UTF_8));
+    HttpEntity httpEntity = builder.addPart("fileName", fileBody)
+            // 通过file, byte[], inputStream来上传文件
+            .addBinaryBody("fileName", new File("e:\\a.png"))
+//              .addTextBody("userName", "小明")
+            .addPart("userName", stringBody)
+            .addTextBody("passWord", "admin")
+            .build();
+    // 给httpPost对象设置参数
+    httpPost.setEntity(httpEntity);
+    CloseableHttpResponse response = null;
+    try {
+        response = closeableHttpClient.execute(httpPost);
+        if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode()) {
+            HttpEntity entity = response.getEntity();
+            String entityStr = EntityUtils.toString(entity, StandardCharsets.UTF_8);
+            System.out.println(entityStr);
+            EntityUtils.consume(entity);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        if (closeableHttpClient != null) {
+            try {
+                closeableHttpClient.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (response != null) {
+            try {
+                response.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+````
 
 
 
@@ -338,7 +395,10 @@ public void testPost2() {
 
 # 五, 请求https连接
 
-
++ 安全的: https://www.baidu.com/
++ 不安全的: https://localhost:8888/httpsTest
+  + 通过认证需要的密钥配置HttpClient
+  + 配置HttpClient绕过https的安全认证
 
 
 
@@ -346,7 +406,8 @@ public void testPost2() {
 
 # 六, 使用HttpClient连接池
 
-
++ 性能, 提高程序运行速度
++ 连接的可复用性
 
 
 
