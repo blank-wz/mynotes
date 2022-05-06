@@ -363,8 +363,8 @@ public void testPost3() {
     try {
         response = closeableHttpClient.execute(httpPost);
         if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode()) {
-            HttpEntity entity = response.getEntity();
-            String entityStr = EntityUtils.toString(entity, StandardCharsets.UTF_8);
+            HttpEntity httpEntity = response.getEntity();
+            String entityStr = EntityUtils.toString(httpEntity, StandardCharsets.UTF_8);
             System.out.println(entityStr);
             EntityUtils.consume(entity);
         }
