@@ -304,10 +304,10 @@ userDTO.setUserId(1000L);
 userDTO.setUserName("王小锤");
 
 // 使用Httpentity形式包装传参
-HttpEntity<UserDTO> entityparam = new HttpEntity<>(userDTO, headers);
+HttpEntity<UserDTO> httpEntity = new HttpEntity<>(userDTO, headers);
 
 // 远程调用
-UserDTO result = restTemplate.postForObject(url, entityParam, UserDTO.class);
+UserDTO result = restTemplate.postForObject(url, httpEntity, UserDTO.class);
 ````
 
 
@@ -338,10 +338,10 @@ userDTO.setUserId(1000L);
 userDTO.setUserName("王小锤");
 
 // 使用Httpentity形式包装传参
-HttpEntity<UserDTO> entityparam = new HttpEntity<>(userDTO, headers);
+HttpEntity<UserDTO> httpEntity = new HttpEntity<>(userDTO, headers);
 
 // 远程调用, ResponseEntity 包装返回结果
-ResponseEntity<UserDTO> result = restTemplate.postForEntity(url, entityParam, UserDTO.class);
+ResponseEntity<UserDTO> result = restTemplate.postForEntity(url, httpEntity, UserDTO.class);
 
 // 从返回结果获取状态码包装类
 HttpStatus statusCode = result.getStatusCode();
@@ -383,10 +383,10 @@ userDTO.setUserId(1000L);
 userDTO.setUserName("王小锤");
 
 // 使用Httpentity形式包装传参
-HttpEntity<UserDTO> entityparam = new HttpEntity<>(userDTO, headers);
+HttpEntity<UserDTO> httpEntity = new HttpEntity<>(userDTO, headers);
 
 // 远程调用, 指定请求方式, ResponseEntity 包装返回结果
-ResponseEntity<UserDTO> result = restTemplate.exchange(url, HttpMethod.POST, entityParam, UserDTO.class);
+ResponseEntity<UserDTO> result = restTemplate.exchange(url, HttpMethod.POST, httpEntity, UserDTO.class);
 
 // 从返回结果获取状态码包装类
 HttpStatus statusCode = result.getStatusCode();
