@@ -468,25 +468,188 @@ public List<Integer> filterInteger(List<Integer> list, Predicate<Integer> pre) {
 
 ## 6.1 定义
 
-​	我们在编写代码的时候出现最多的就是空指针异常, 所以在很多情况下我们需要做各种非空判断
-
-​	尤其是对象中的属性还是一个对象的时候, 这种判断会更多
-
-​	而过多的判断语句会让我们的代码显得臃肿不堪.
-
-​	所以在 JDK8 中引入了 Optional, 养成使用 Optional 的习惯后可以写出更优雅的代码来避免空指针异常.
++ 我们在编写代码的时候出现最多的就是空指针异常, 所以在很多情况下我们需要做各种非空判断, 尤其是对象中的属性还是一个对象的时候, 这种判断会更多, 而过多的判断语句会让我们的代码显得臃肿不堪. 所以在 JDK8 中引入了 Optional, 养成使用 Optional 的习惯后可以写出更优雅的代码来避免空指针异常.
 
 ​	
 
 ## 6.2 使用
 
-### 6.2.1 创建对象
+### 6.2.1 创建对象 (ofNullable, of)
 
-​		Optional 就好像是包装类, 可以把我们的具体数据封装到 Optional 对象内部, 然后我们去使用 Optional 中封装好的方法操作封装进去的数据可以非常优雅的避免空指针异常.
+Optional 就好像是包装类, 可以把我们的具体数据封装到 Optional 对象内部, 然后我们去使用 Optional 中封装好的方法操作封装进去的数据可以非常优雅的避免空指针异常.
+
+1. 一般使用 **Optional** 的**静态方法 ofNullable** 把数据封装成一个 Optional 对象, 无论传入的参数是否为 null 都不会出现问题
+
+````java
+Author author = getAuthor();
+Optional<Author> authorOptional = Optional.ofNullable(author);
+
+// ofNullable()方法的源码
+public static <T> Optional<T> ofNullable(T value) {
+    return value == null ? empty() : of(value);
+}
+````
+
+​		你可能会觉得还要加一行代码来封装数据比较麻烦, 但是如果改造一下 getAuthor() 方法, 让其返回值就是封装好的 Optional 的话, 我们在使用时就会方便很多.
+
+​		而在实际开发中我们的数据很多是从数据库获取的, Mybatis 从3.5版本支持 Optional 了, 我们可以直接把 dao 方法的返回值类型定义成 Optional 类型, Mybatis 会自己把数据封装成 Optional 对象返回, 封装的过程不需要自己操作.
+
+2. 如果你**确定一个对象不是空**, 则可以使用 **Optional 的静态方法 of** 来把数据封装成 Optional 对象
+
+````java
+Author author = new Author();
+Optional<Author> authorOptional = Optional.of(author);
+
+// of()方法的源码
+public static <T> Optional<T> of(T value) {
+    return new Optional<>(value);
+}
+````
+
+​		如果一个方法的返回值类型是 Optional 类型, 而如果我们经判断发现某次计算得到的返回值为 null, 这个时候需要把 null 封装成 Optional 对象返回, 这是可以使用 Optional 的 **静态方法 empty()** 来进行封装.
+
+````java
+Optional.empty();
+
+// empty()方法的源码
+private static final Optional<?> EMPTY = new Optional<>();
+public static<T> Optional<T> empty() {
+    @SuppressWarnings("unchecked")
+    Optional<T> t = (Optional<T>) EMPTY;
+    return t;
+}
+````
 
 
 
+### 6.2.2 安全消费值 (ifPresent)
 
++ 我们获取到一个 Optional 对象后肯定需要对其中的数据进行使用, 这时候我们可以使用 **ifPresent** 方法来消费其中的值. 这个方法会判断其中内封装的数据是否为空, 不为空时才会执行具体的消费代码, 这样使用起来就更加安全了.
+
++ 例如如下写法就优雅的避免了空指针异常
+
+  ````Java
+  Optional<Author> authorOptional = Optional.ofNullable(getAuthor());
+  authorOptional.ifPresent(author -> System.out.println(author.getName()))
+  ````
+
+
+
+### 6.2.3 不安全获取值 (get)
+
++ 如果我们想获取值自己进行处理可以使用 **get()** 方法获取, 但是**不推荐**, 因为当 Optional 内部的数据为空的时候会出现异常 (NoSuchElementException)
+
+  ````java
+  // get() 的源码
+  private final T value;
+  public T get() {
+      if (value == null) {
+          throw new NoSuchElementException("No value present");
+      }
+      return value;
+  }
+  ````
+
+  
+
+
+
+### 6.2.4 安全获取值 (orElseGet, orElseThrow)
+
+​		如果我们期望安全的获取值, 则不推荐使用 get() 方法, 而是使用 Optional 提供的以下方法.
+
++ **orElseGet**
+
+  获取数据并且设置数据为空的默认值, 如果数据不为空就能获取该数据, 如果为空则根据传入的参数创建对象作为默认值返回
+
+  ````java
+  Optional<Author> authorOptinal = Optional.ofNullable(getAuthor());
+  Author author = authorOptinal.orElseGet(() -> new Author());
+  
+  // orElseGet 的源码
+  public T orElseGet(Supplier<? extends T> other) {
+      return value != null ? value : other.get();
+  }
+  ````
+
++ **orElseThrow**
+
+  获取数据, 如果数据不为空就能获取该数据, 如果为空则根据你传入的参数来创建异常抛出
+
+  ````java
+  // orElseThrow 的源码
+  public <X extends Throwable> T orElseThrow(Supplier<? extends X> exceptionSupplier) throws X {
+      if (value != null) {
+          return value;
+      } else {
+          throw exceptionSupplier.get();
+      }
+  }
+  ````
+
+  
+
+### 6.2.5 过滤 (filter)
+
++ 我们可以使用 **filter** 方法对数据进行过滤, 如果原本是有数据的, 但是不符合判断, 也会变成一个无数据的 Optional 对象
+
+  ````java
+  Optional<Author> authorOptinal = Optional.ofNullable(getAuthor());
+  authorOptinal.filter(author -> author.getAge() > 100).ifPresent(author -> System.out.println(author.getName()));
+  
+  // filter 方法的源码
+  public Optional<T> filter(Predicate<? super T> predicate) {
+      Objects.requireNonNull(predicate);
+      if (!isPresent())
+          return this;
+      else
+          return predicate.test(value) ? this : empty();
+  }
+  ````
+
+  
+
+### 6.2.6 判断 (isPresent)
+
++ 我们可以使用 **isPresent** 方法进行是否存在数据的判断, 如果为空返回值为 false, 如果不为空, 返回值为 true, 但是这种方式并不能体现 Optional 的好处, **更推荐使用 ifPresent 方法**
+
+  ````java
+  Optional<Author> authorOptinal = Optional.ofNullable(getAuthor());
+  if (authorOptinal.isPresent()) {
+      System.out.println(authorOptinal.get().getName());
+  }
+  
+  // isPresent 方法的源码
+  public boolean isPresent() {
+      return value != null;
+  }
+  ````
+
+  
+
+### 6.2.7 数据转换 (map)
+
++ Optional 还提供了 **map** 方法可以让我们对数据进行转换, 并且转换的到的数据也还是被 Optional 包装好的, 保证了我们的使用安全
+
++ 例如我们想获取作家书籍的集合
+
+  ````java
+  Optional<Author> authorOptinal = Optional.ofNullable(getAuthor());
+  Optional<List<Book>> books = authorOptinal.map(author -> author.getBook());
+  books.ifPresent(books-> System.out.println(books));
+  
+  // map 方法的源码
+  public<U> Optional<U> map(Function<? super T, ? extends U> mapper) {
+      Objects.requireNonNull(mapper);
+      if (!isPresent())
+          return empty();
+      else {
+          return Optional.ofNullable(mapper.apply(value));
+      }
+  }
+  ````
+
+  
 
 
 
