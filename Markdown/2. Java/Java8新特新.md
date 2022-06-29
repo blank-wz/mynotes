@@ -603,7 +603,6 @@ public static<T> Optional<T> empty() {
 >     两者的明显（也是唯一）区别是前者需要传递的参数是一个值（通常是为空时的默认值），后者传递的是一个函数。我们看一下源代码：
 >     
 >       /**
->     
 >        *Return the value if present, otherwise return {@code other}.
 >        */
 >       public T orElse(T other) {
@@ -611,9 +610,7 @@ public static<T> Optional<T> empty() {
 >       }
 >     
 >       /**
->     
 >        *Return the value if present, otherwise invoke {@code other} and return
->     
 >        *the result of that invocation.
 >        */
 >       public T orElseGet(Supplier<? extends T> other) {
