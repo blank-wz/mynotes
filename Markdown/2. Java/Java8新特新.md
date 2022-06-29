@@ -594,72 +594,73 @@ public static<T> Optional<T> empty() {
 >
 >
 > 1. orElse与orElseGet介绍与使用
->   一般而言，我们使用orElse或是orElseGet均是来做使用Optional时的收尾工作，比如：
->
->   Optional.ofNullable(aVariableThatMayBeIsNull)
->           // 一些其它操作，比如 .map()
->           .orElse(defaultValue); // 或是 .orElseGet(aFunctionUsedToComputeDefaultValue)
->   两者的明显（也是唯一）区别是前者需要传递的参数是一个值（通常是为空时的默认值），后者传递的是一个函数。我们看一下源代码：
->
->   /**
->
->    *Return the value if present, otherwise return {@code other}.
->    */
->   public T orElse(T other) {
->   return value != null ? value : other;
->   }
->
->   /**
->
->    *Return the value if present, otherwise invoke {@code other} and return
->
->    *the result of that invocation.
->    */
->   public T orElseGet(Supplier<? extends T> other) {
->   return value != null ? value : other.get();
->   }
->
->   简单解释为，我们使用Optional包装的变量如果不为空，返回它本身，否则返回我们传递进去的值。orElseGet参数为Supplier接口，它是一个函数式接口，它的形式是这样的：() -> { return computedResult }，即入参为空，有返回值（任意类型的）。推荐浏览下java.util.function包下的其它常用接口，比如Consumer、Function、Predicate。
+>     一般而言，我们使用orElse或是orElseGet均是来做使用Optional时的收尾工作，比如：
+>     
+>       Optional.ofNullable(aVariableThatMayBeIsNull)
+>               // 一些其它操作，比如 .map()
+>               .orElse(defaultValue); // 或是 .orElseGet(aFunctionUsedToComputeDefaultValue)
+>     
+>     两者的明显（也是唯一）区别是前者需要传递的参数是一个值（通常是为空时的默认值），后者传递的是一个函数。我们看一下源代码：
+>     
+>       /**
+>     
+>        *Return the value if present, otherwise return {@code other}.
+>        */
+>       public T orElse(T other) {
+>       return value != null ? value : other;
+>       }
+>     
+>       /**
+>     
+>        *Return the value if present, otherwise invoke {@code other} and return
+>     
+>        *the result of that invocation.
+>        */
+>       public T orElseGet(Supplier<? extends T> other) {
+>       return value != null ? value : other.get();
+>       }
+>     
+>     简单解释为，我们使用Optional包装的变量如果不为空，返回它本身，否则返回我们传递进去的值。orElseGet参数为Supplier接口，它是一个函数式接口，它的形式是这样的：() -> { return computedResult }，即入参为空，有返回值（任意类型的）。推荐浏览下java.util.function包下的其它常用接口，比如Consumer、Function、Predicate。
 >
 > 2. 更进一步：两者的区别
->   我们可能考虑的问题是：何时使用orElse和何时使用orElseGet？看起来可以使用orElseGet的时候，使用orElse也可以代替（因为Supplier接口没有入参），而且使用orElseGet还需要将计算过程额外包装成一个 lambda 表达式。
->
->   一个关键的点是，使用Supplier能够做到懒计算，即使用orElseGet时。它的好处是，只有在需要的时候才会计算结果。具体到我们的场景，使用orElse的时候，每次它都会执行计算结果的过程，而对于orElseGet，只有Optional中的值为空时，它才会计算备选结果。这样做的好处是可以避免提前计算结果的风险。
+>     我们可能考虑的问题是：何时使用orElse和何时使用orElseGet？看起来可以使用orElseGet的时候，使用orElse也可以代替（因为Supplier接口没有入参），而且使用orElseGet还需要将计算过程额外包装成一个 lambda 表达式。
+>     
+>     一个关键的点是，使用Supplier能够做到懒计算，即使用orElseGet时。它的好处是，只有在需要的时候才会计算结果。具体到我们的场景，使用orElse的时候，每次它都会执行计算结果的过程，而对于orElseGet，只有Optional中的值为空时，它才会计算备选结果。这样做的好处是可以避免提前计算结果的风险。
 >
 > 3. 场景举例
->   举个例子，或许更清楚一些：
->
->   class User {
->       // 中文名
->   	private String chineseName;
->   	// 英文名
->   	private EnglishName englishName;
->   }
->
->   class EnglishName {
->       // 全名
->       private String fullName;
->       // 简写
->       private String shortName;
->   }
->
->   假如我们现在有User类，用户注册账号时，需要提供自己的中文名或英文名，或都提供，我们抽象出一个EnglishName类，它包含英文名的全名和简写（因为有的英文名确实太长了）。现在，我们希望有一个User#getName()方法，它可以像下面这样实现：
->
->   class User {
->       // ... 之前的内容
->       public String getName1() {
->           return Optional.ofNullable(chineseName)
->                   .orElse(englishName.getShortName());
+>     举个例子，或许更清楚一些：
+>     
+>       class User {
+>           // 中文名
+>       	private String chineseName;
+>       	// 英文名
+>       	private EnglishName englishName;
 >       }
->       public String getName2() {
->           return Optional.ofNullable(chineseName)
->                   .orElseGet(() -> englishName.getShortName());
+>     
+>       class EnglishName {
+>           // 全名
+>           private String fullName;
+>           // 简写
+>           private String shortName;
 >       }
->   }
->
->   我写了两个版本，分别使用orElse和orElseGet。现在，你可以看出getName1()方法有什么风险了吗？它会出现空指针异常吗？
->
->   答案是：是的。当用户只提供了中文名时，此时englishName属性是null，但是在orElse中，englishName.getShortName()总是会执行。而在getName2()中，这个风险却没有。
+>     
+>     假如我们现在有User类，用户注册账号时，需要提供自己的中文名或英文名，或都提供，我们抽象出一个EnglishName类，它包含英文名的全名和简写（因为有的英文名确实太长了）。现在，我们希望有一个User#getName()方法，它可以像下面这样实现：
+>     
+>       class User {
+>           // ... 之前的内容
+>           public String getName1() {
+>               return Optional.ofNullable(chineseName)
+>                       .orElse(englishName.getShortName());
+>           }
+>           public String getName2() {
+>               return Optional.ofNullable(chineseName)
+>                       .orElseGet(() -> englishName.getShortName());
+>           }
+>       }
+>     
+>     我写了两个版本，分别使用orElse和orElseGet。现在，你可以看出getName1()方法有什么风险了吗？它会出现空指针异常吗？
+>     
+>     答案是：是的。当用户只提供了中文名时，此时englishName属性是null，但是在orElse中，englishName.getShortName()总是会执行。而在getName2()中，这个风险却没有。
 >
 > 4. 真实案例
 > 或许上面那个例子还不是很清楚，我们看一个真实的案例分页插件报错The jdbcUrl is Null, Cannot read database type #2172。
@@ -667,7 +668,7 @@ public static<T> Optional<T> empty() {
 >
 >
 > 5. 总结
->   这篇文章分析了常用的Optional中的orElse和orElseGet方法，比较了两者的区别，说明了使用orElse时的风险，并提供了一个简朴的例子，我的收获是从真实案例中学到的。
+>     这篇文章分析了常用的Optional中的orElse和orElseGet方法，比较了两者的区别，说明了使用orElse时的风险，并提供了一个简朴的例子，我的收获是从真实案例中学到的。
 >
 > 总结下来，使用Optional时，当备选值是通过某个计算过程得到的时候，你都应该小心这个计算过程是否有风险，并在orElse和orElseGet之间做一个权衡。
 
