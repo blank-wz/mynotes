@@ -271,39 +271,9 @@
 
 
 
-
-
 # 五, 多线程
 
-
-
-## 5.1 什么是线程池
-
-用来存放就绪状态的线程的容器, 需要的时候从池中获取线程不用自行创建，使用完毕不需要销毁线程而是放回池中, 提高线程的高可用, 减少创建销毁线程对象的开销
-
-
-
-## 5.2 创建线程池的方式
-
-线程池的创建方法总共有 7 种，但总体来说可分为 2 类：
-
-- 一类是通过 ThreadPoolExecutor 创建的线程池；
-- 另一个类是通过 Executors 创建的线程池。
-
-![img](https://raw.githubusercontent.com/blank-wz/typoraimage/main/images/2022/08/31/979f9b44b5afab3902e0d22d9a4a14f4-924700-20201218091637063-1692359064-5aabfc.png)
-
-
-
-## 5.3 线程池的优点
-
-1. 降低资源消耗：通过池化技术重复利用已创建的线程，降低线程创建和销毁造成的损耗。
-2. 提高响应速度：任务到达时，无需等待线程创建即可立即执行。
-3. 提高线程的可管理性：线程是稀缺资源，如果无限制创建，不仅会消耗系统资源，还会因为线程的不合理分布导致资源调度失衡，降低系统的稳定性。使用线程池可以进行统一的分配、调优和监控。
-4. 提供更多更强大的功能：线程池具备可拓展性，允许开发人员向其中增加更多的功能。比如延时定时线程池ScheduledThreadPoolExecutor，就允许任务延期执行或定期执行。
-
-
-
-## 5.4 sleep() 与 wait() 的区别
+## 5.1 sleep() 与 wait() 的区别
 
 1. sleep() 
    1) 是 Thread 的静态方法
@@ -318,7 +288,7 @@
 
 
 
-## 5.5 并发编程 - 原子性, 可见性 和 有序性
+## 5.2 并发编程 - 原子性, 可见性 和 有序性
 
 1. 原子性
 
@@ -331,3 +301,408 @@
 3. 有序性
 
    即程序的执行顺序按照代码的先后顺序执行
+
+
+
+# 六, 线程池
+
+
+
+## 6.1 什么是线程池
+
+线程池（ThreadPool）是一种基于池化思想管理和使用线程的机制。它是将多个线程预先存储在一个“池子”内，当有任务出现时可以避免重新创建和销毁线程所带来性能开销，只需要从“池子”内取出相应的线程执行对应的任务即可。
+
+池化思想在计算机的应用也比较广泛，比如以下这些：
+
+- 内存池(Memory Pooling)：预先申请内存，提升申请内存速度，减少内存碎片。
+- 连接池(Connection Pooling)：预先申请数据库连接，提升申请连接的速度，降低系统的开销。
+- 实例池(Object Pooling)：循环使用对象，减少资源在初始化和释放时的昂贵损耗。
+
+
+
+## 6.2 线程池的优点
+
+1. 降低资源消耗：通过池化技术重复利用已创建的线程，降低线程创建和销毁造成的损耗。
+2. 提高响应速度：任务到达时，无需等待线程创建即可立即执行。
+3. 提高线程的可管理性：线程是稀缺资源，如果无限制创建，不仅会消耗系统资源，还会因为线程的不合理分布导致资源调度失衡，降低系统的稳定性。使用线程池可以进行统一的分配、调优和监控。
+4. 提供更多更强大的功能：线程池具备可拓展性，允许开发人员向其中增加更多的功能。比如延时定时线程池ScheduledThreadPoolExecutor，就允许任务延期执行或定期执行。
+
+
+
+## 6.3 线程池的使用
+
+线程池的创建方法总共有 7 种，但总体来说可分为 2 类：
+
+- 一类是通过 ThreadPoolExecutor 创建的线程池；
+- 另一个类是通过 Executors 创建的线程池。
+
+![img](https://raw.githubusercontent.com/blank-wz/typoraimage/main/images/2022/08/31/979f9b44b5afab3902e0d22d9a4a14f4-924700-20201218091637063-1692359064-5aabfc.png)
+
+线程池的创建方式总共包含以下 7 种（其中 6 种是通过 Executors 创建的，1 种是通过ThreadPoolExecutor 创建的）
+
+1. Executors.newFixedThreadPool：创建一个固定大小的线程池，可控制并发的线程数，超出的线程会在队列中等待；
+2. Executors.newCachedThreadPool：创建一个可缓存的线程池，若线程数超过处理所需，缓存一段时间后会回收，若线程数不够，则新建线程；\
+3. Executors.newSingleThreadExecutor：创建单个线程数的线程池，它可以保证先进先出的执行顺序；
+4. Executors.newScheduledThreadPool：创建一个可以执行延迟任务的线程池；
+5. Executors.newSingleThreadScheduledExecutor：创建一个单线程的可以执行延迟任务的线程池；
+6. Executors.newWorkStealingPool：创建一个抢占式执行的线程池（任务执行顺序不确定）【JDK 1.8 添加】。
+7. ThreadPoolExecutor：最原始的创建线程池的方式，它包含了 7 个参数可供设置，后面会详细讲。
+
+> 单线程池的意义从以上代码可以看出 newSingleThreadExecutor 和 newSingleThreadScheduledExecutor 创建的都是单线程池，那么单线程池的意义是什么呢？答：虽然是单线程池，但提供了工作队列，生命周期管理，工作线程维护等功能。
+
+### ① FixedThreadPool
+
+创建一个固定大小的线程池，可控制并发的线程数，超出的线程会在队列中等待。
+
+````java
+public static void fixedThreadPool() {
+    // 创建线程池
+    ExecutorService threadPool = Executors.newFixedThreadPool(2);
+    // 执行任务
+    for (int i = 0; i < 4; i++) {
+        threadPool.execute(() -> {
+            System.out.println("任务被执行,线程:" + Thread.currentThread().getName());
+        });
+    }
+}
+````
+
+![image-20220831211338366](https://raw.githubusercontent.com/blank-wz/typoraimage/main/images/2022/08/31/b1eecd164401f2c2d2602ca54d336178-image-20220831211338366-dd765d.png)
+
+### ② CachedThreadPool
+
+创建一个可缓存的线程池，若线程数超过处理所需，缓存一段时间后会回收，若线程数不够，则新建线程。
+
+````java
+public static void cachedThreadPool() {
+    // 创建线程池
+    ExecutorService threadPool = Executors.newCachedThreadPool();
+    // 执行任务
+    for (int i = 0; i < 10; i++) {
+        final int index = i;
+        threadPool.execute(() -> {
+            System.out.println(index + ":" + "任务被执行,线程:" + Thread.currentThread().getName());
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+            }
+        });
+    }
+}
+````
+
+![image-20220831212330858](https://raw.githubusercontent.com/blank-wz/typoraimage/main/images/2022/08/31/66f528c8239e9242aff2ef3fd33ca3f5-image-20220831212330858-5e2f4e.png)
+
+
+
+### ③ SingleThreadExecutor
+
+创建单个线程数的线程池，它可以保证先进先出的执行顺序。
+
+````java
+public static void singleThreadExecutor() {
+    // 创建线程池
+    ExecutorService threadPool = Executors.newSingleThreadExecutor();
+    // 执行任务
+    for (int i = 0; i < 10; i++) {
+        final int index = i;
+        threadPool.execute(() -> {
+            System.out.println(index + ":任务被执行");
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+            }
+        });
+    }
+}
+````
+
+![image-20220831212448650](https://raw.githubusercontent.com/blank-wz/typoraimage/main/images/2022/08/31/54f77ada409f67f8e84cf6fc90c2b386-image-20220831212448650-18ee18.png)
+
+
+
+### ④ ScheduledThreadPool
+
+创建一个可以执行延迟任务的线程池。
+
+````java
+public static void scheduledThreadPool() {
+    // 创建线程池
+    ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(5);
+    // 添加定时执行任务(1s 后执行)
+    System.out.println("添加任务,时间:" + new Date());
+    threadPool.schedule(() -> {
+        System.out.println("任务被执行,时间:" + new Date());
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+        }
+    }, 1, TimeUnit.SECONDS);
+}
+````
+
+![image-20220831211804011](https://raw.githubusercontent.com/blank-wz/typoraimage/main/images/2022/08/31/00fa90c2bd2a024f46f10143daa43ada-image-20220831211804011-dfcf97.png)
+
+从上述结果可以看出，任务在 1 秒之后被执行了，符合我们的预期。
+
+
+
+### ⑤ SingleThreadScheduledExecutor
+
+创建一个单线程的可以执行延迟任务的线程池。
+
+````java
+public static void SingleThreadScheduledExecutor() {
+    // 创建线程池
+    ScheduledExecutorService threadPool = Executors.newSingleThreadScheduledExecutor();
+    // 添加定时执行任务(2s 后执行)
+    System.out.println("添加任务,时间:" + new Date());
+    threadPool.schedule(() -> {
+        System.out.println("任务被执行,时间:" + new Date());
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+        }
+    }, 2, TimeUnit.SECONDS);
+}
+````
+
+![image-20220831212654853](https://raw.githubusercontent.com/blank-wz/typoraimage/main/images/2022/08/31/cc693127c77b7570d779ef10e5daa246-image-20220831212654853-921081.png)
+
+
+
+### ⑥ newWorkStealingPool
+
+创建一个抢占式执行的线程池（任务执行顺序不确定），注意此方法只有在 JDK 1.8+ 版本中才能使用。
+
+````java
+public static void workStealingPool() {
+    // 创建线程池
+    ExecutorService threadPool = Executors.newWorkStealingPool();
+    // 执行任务
+    for (int i = 0; i < 10; i++) {
+        final int index = i;
+        threadPool.execute(() -> {
+            System.out.println(index + " 被执行,线程名:" + Thread.currentThread().getName());
+        });
+    }
+    // 确保任务执行完成
+    while (!threadPool.isTerminated()) {
+    }
+}
+````
+
+![image-20220831212851798](https://raw.githubusercontent.com/blank-wz/typoraimage/main/images/2022/08/31/cffab791556f806efcc40febd1c8076c-image-20220831212851798-09bf76.png)
+
+从上述结果可以看出，任务的执行顺序是不确定的，因为它是抢占式执行的
+
+
+
+### ⑦ ThreadPoolExecutor
+
+最原始的创建线程池的方式，它包含了 7 个参数可供设置。
+
+````java
+public static void myThreadPoolExecutor() {
+    // 创建线程池
+    ThreadPoolExecutor threadPool = new ThreadPoolExecutor(5, 10, 100, TimeUnit.SECONDS, new LinkedBlockingQueue<>(10));
+    // 执行任务
+    for (int i = 0; i < 10; i++) {
+        final int index = i;
+        threadPool.execute(() -> {
+            System.out.println(index + " 被执行,线程名:" + Thread.currentThread().getName());
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+}
+````
+
+![image-20220831213607859](https://raw.githubusercontent.com/blank-wz/typoraimage/main/images/2022/08/31/a41254781c9686462069c906c24f206b-image-20220831213607859-298808.png)
+
+
+
+## 6.4 ThreadPoolExecutor 参数介绍
+
+````java
+public ThreadPoolExecutor(int corePoolSize,
+                          int maximumPoolSize,
+                          long keepAliveTime,
+                          TimeUnit unit,
+                          BlockingQueue<Runnable> workQueue) {
+    this(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue,
+         Executors.defaultThreadFactory(), defaultHandler);
+}
+````
+
+7 个参数代表的含义如下：
+
+#### 参数 1：corePoolSize
+
+核心线程数，线程池中始终存活的线程数。
+
+#### 参数 2：maximumPoolSize
+
+最大线程数，线程池中允许的最大线程数，当线程池的任务队列满了之后可以创建的最大线程数。
+
+#### 参数 3：keepAliveTime
+
+最大线程数可以存活的时间，当线程中没有任务执行时，最大线程就会销毁一部分，最终保持核心线程数量的线程。
+
+#### 参数 4：unit:
+
+单位是和参数 3 存活时间配合使用的，合在一起用于设定线程的存活时间 ，参数 keepAliveTime 的时间单位有以下 7 种可选：
+
+- TimeUnit.DAYS：天
+- TimeUnit.HOURS：小时
+- TimeUnit.MINUTES：分
+- TimeUnit.SECONDS：秒
+- TimeUnit.MILLISECONDS：毫秒
+- TimeUnit.MICROSECONDS：微妙
+- TimeUnit.NANOSECONDS：纳秒
+
+#### 参数 5：workQueue
+
+一个阻塞队列，用来存储线程池等待执行的任务，均为线程安全，它包含以下 7 种类型：
+
+- ArrayBlockingQueue：一个由数组结构组成的有界阻塞队列。
+- LinkedBlockingQueue：一个由链表结构组成的有界阻塞队列。
+- SynchronousQueue：一个不存储元素的阻塞队列，即直接提交给线程不保持它们。
+- PriorityBlockingQueue：一个支持优先级排序的无界阻塞队列。
+- DelayQueue：一个使用优先级队列实现的无界阻塞队列，只有在延迟期满时才能从中提取元素。
+- LinkedTransferQueue：一个由链表结构组成的无界阻塞队列。与SynchronousQueue类似，还含有非阻塞方法。
+- LinkedBlockingDeque：一个由链表结构组成的双向阻塞队列。
+
+较常用的是 LinkedBlockingQueue 和 Synchronous，线程池的排队策略与 BlockingQueue 有关。
+
+#### 参数 6：threadFactory
+
+线程工厂，主要用来创建线程，默认为正常优先级、非守护线程。
+
+#### 参数 7：handler
+
+拒绝策略，拒绝处理任务时的策略，系统提供了 4 种可选：
+
+- AbortPolicy：拒绝并抛出异常。
+- CallerRunsPolicy：使用当前调用的线程来执行此任务。
+- DiscardOldestPolicy：抛弃队列头部（最旧）的一个任务，并执行当前任务。
+- DiscardPolicy：忽略并抛弃当前任务。
+
+默认策略为 AbortPolicy。
+
+
+
+## 6.5 线程池的执行流程
+
+ThreadPoolExecutor 关键节点的执行流程如下：
+
+- 当线程数小于核心线程数时，创建线程。
+- 当线程数大于等于核心线程数，且任务队列未满时，将任务放入任务队列。
+- 当线程数大于等于核心线程数，且任务队列已满：若线程数小于最大线程数，创建线程；若线程数等于最大线程数，抛出异常，拒绝任务。
+
+线程池的执行流程如下图所示：
+
+![img](https://img2020.cnblogs.com/blog/924700/202012/924700-20201218092732932-3311211.png)
+
+ 
+
+## 6.6 线程拒绝策略
+
+我们来演示一下 ThreadPoolExecutor 的拒绝策略的触发，我们使用 DiscardPolicy 的拒绝策略，它会忽略并抛弃当前任务的策略，实现代码如下：
+
+```
+public static void main(String[] args) {
+    // 任务的具体方法
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            System.out.println("当前任务被执行,执行时间:" + new Date() +
+                               " 执行线程:" + Thread.currentThread().getName());
+            try {
+                // 等待 1s
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+    // 创建线程,线程的任务队列的长度为 1
+    ThreadPoolExecutor threadPool = new ThreadPoolExecutor(1, 1,
+                                                           100, TimeUnit.SECONDS, new LinkedBlockingQueue<>(1),
+                                                           new ThreadPoolExecutor.DiscardPolicy());
+    // 添加并执行 4 个任务
+    threadPool.execute(runnable);
+    threadPool.execute(runnable);
+    threadPool.execute(runnable);
+    threadPool.execute(runnable);
+}
+```
+
+我们创建了一个核心线程数和最大线程数都为 1 的线程池，并且给线程池的任务队列设置为 1，这样当我们有 2 个以上的任务时就会触发拒绝策略，执行的结果如下图所示
+
+![img](https://img2020.cnblogs.com/blog/924700/202012/924700-20201218092822226-66500295.png)
+
+ 
+
+## 6.7 自定义拒绝策略
+
+除了 Java 自身提供的 4 种拒绝策略之外，我们也可以自定义拒绝策略，示例代码如下：
+
+```
+public static void main(String[] args) {
+    // 任务的具体方法
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            System.out.println("当前任务被执行,执行时间:" + new Date() +
+                               " 执行线程:" + Thread.currentThread().getName());
+            try {
+                // 等待 1s
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+    // 创建线程,线程的任务队列的长度为 1
+    ThreadPoolExecutor threadPool = new ThreadPoolExecutor(1, 1,
+                                                           100, TimeUnit.SECONDS, new LinkedBlockingQueue<>(1),
+                                                           new RejectedExecutionHandler() {
+                                                               @Override
+                                                               public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+                                                                   // 执行自定义拒绝策略的相关操作
+                                                                   System.out.println("我是自定义拒绝策略~");
+                                                               }
+                                                           });
+    // 添加并执行 4 个任务
+    threadPool.execute(runnable);
+    threadPool.execute(runnable);
+    threadPool.execute(runnable);
+    threadPool.execute(runnable);
+}
+```
+
+![img](https://img2020.cnblogs.com/blog/924700/202012/924700-20201218092918213-1054849701.png)
+
+ 
+
+## 6.8 究竟选用哪种线程池？
+
+经过以上的学习我们对整个线程池也有了一定的认识了，那究竟该如何选择线程池呢？
+
+我们来看下阿里巴巴《Java开发手册》给我们的答案：
+
+> 【强制】线程池不允许使用 Executors 去创建，而是通过 ThreadPoolExecutor 的方式，这样的处理方式让写的同学更加明确线程池的运行规则，规避资源耗尽的风险。
+>
+> 说明：Executors 返回的线程池对象的弊端如下：
+>
+> 1） FixedThreadPool 和 SingleThreadPool：允许的请求队列长度为 Integer.MAX_VALUE，可能会堆积大量的请求，从而导致 OOM。
+>
+> 2）CachedThreadPool：允许的创建线程数量为 Integer.MAX_VALUE，可能会创建大量的线程，从而导致 OOM。
+
+所以综上情况所述，我们推荐使用 ThreadPoolExecutor 的方式进行线程池的创建，因为这种创建方式更可控，并且更加明确了线程池的运行规则，可以规避一些未知的风险。
+
+本文我们介绍了线程池的 7 种创建方式，其中最推荐使用的是 ThreadPoolExecutor 的方式进行线程池的创建，ThreadPoolExecutor 最多可以设置 7 个参数，当然设置 5 个参数也可以正常使用，ThreadPoolExecutor 当任务过多（处理不过来）时提供了 4 种拒绝策略，当然我们也可以自定义拒绝策略.
