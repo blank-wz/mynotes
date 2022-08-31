@@ -172,7 +172,7 @@
 1. Vector：就比 Arraylist 多了个同步化机制（线程安全），因为效率较低，现在已经不太建议使用
 2. Hashtable：就比 Hashmap 多了个线程安全
 3. ConcurrentHashMap : 高效,线程安全, 采用了**数组+Segment+分段锁**的方式实现
-4. statck：堆栈类，先进后出
+4. Stack：堆栈类，先进后出
 
 
 
@@ -186,7 +186,7 @@
 
    ```
    List<String> list = new ArrayList<>();
-   Iterator<String> it = list. iterator();
+   Iterator<String> it = list.iterator();
    while(it. hasNext()){
      String obj = it. next();
      System. out. println(obj);
