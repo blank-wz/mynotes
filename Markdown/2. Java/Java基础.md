@@ -81,12 +81,10 @@
 ## 2.5 List，Set，Map三者的区别, 存取元素时，各有什么特点
 
 + **Collection **集合主要有List和Set两大接口
-  1. **List** ：一个有序, 容器元素可以重复，可以插入多个null元素，元素都有索引。常用的实现类有 ArrayList、LinkedList 和 Vector
-  2. **Set** ：一个无序, 容器不可以存储重复元素，只允许存入一个null元素，必须保证元素唯一性。Set 接口常用实现类是 HashSet、LinkedHashSet 以及 TreeSet
+  1. **List** (对付顺序的好帮手) ：一个有序, 容器元素可以重复，可以插入多个null元素，元素都有索引。常用的实现类有 ArrayList、LinkedList 和 Vector
+  2. **Set** (注重独一无二的性质) ：一个无序, 容器不可以存储重复元素，只允许存入一个null元素，必须保证元素唯一性。Set 接口常用实现类是 HashSet、LinkedHashSet 以及 TreeSet
 
-+ **Map **是一个键值对集合，存储键、值和之间的映射。 Key无序，唯一；value 不要求有序，允许重复。Map没有继承于Collection接口，从Map集合中检索元素时，只要给出键对象，就会返回对应的值对象
-
-  Map 的常用实现类：HashMap、TreeMap、HashTable、LinkedHashMap、ConcurrentHashMap
++ **Map ** (用Key来搜索的专业户) 是一个键值对集合，存储键、值和之间的映射。 Key无序，唯一；value 不要求有序，允许重复。Map 的常用实现类：HashMap、TreeMap、HashTable、LinkedHashMap、ConcurrentHashMap
 
 
 
@@ -102,10 +100,10 @@
 
 ## 2.7 ArrayList 和 LinkedList 的优缺点/区别
 
-1. ArrayList 是实现了基于动态数组的数据结构，LinkedList 是基于链表结构
-2. ArrayList 查询快，增删慢；LinkedList 增删快，查询慢
-3. ArrayList 底层为动态数组，所以查询时是直接通过访问下标，查询效率高, 而增加而删除时。为了保证内存的连续，增加和删除某一位置后，后方元素都得向前移动一位
-4. LinkedList 底层为双向链表，不必保证内存上的连续，所以增删快，而查询时必须要经历从头到尾的遍历，所以查询慢
+1. ArrayList 底层基于动态数组实现，LinkedList 底层基于链表实现。
+2. 对于按 index 索引数据（get/set方法）：ArrayList 通过 index 直接定位到数组对应位置的节点，而 LinkedList需要从头结点或尾节点开始遍历，直到寻找到目标节点，因此在效率上 ArrayList 优于 LinkedList。
+3. 对于随机插入和删除：ArrayList 需要移动目标节点后面的节点（使用System.arraycopy 方法移动节点），而 LinkedList 只需修改目标节点前后节点的 next 或 prev 属性即可，因此在效率上 LinkedList 优于 ArrayList。
+4. 对于顺序插入和删除：由于 ArrayList 不需要移动节点，因此在效率上比 LinkedList 更好。这也是为什么在实际使用中 ArrayList 更多，因为大部分情况下我们的使用都是顺序插入
 
 
 
@@ -117,7 +115,7 @@
    + 不同：直接存储
    + 相同：用 equals 方法判断
      + 不同：直接存储
-     + 相同：去重
+     + 相同：替换
 
 
 
@@ -147,19 +145,19 @@
     2. LinkedList : 双向链表
   * Set
     1. HashSet (无序, 唯一) : 基于 HashMap 实现的，底层采用 HashMap 来保存元素
-    2. LinkedHashSet : LinkedHashSet 继承与 HashSet，并且其内部是通过 LinkedHashMap 来实现
+    2. LinkedHashSet : LinkedHashSet 继承与 HashSet，并且其内部是通过 LinkedHashMap 来实现有序
 
 
 
 * **Map**
-  * **HashMap** (JDK1.8 之前是数组+链表, JDK1.8之后是数组+链表+红黑树)
+  * **HashMap** (JDK1.8 之前是数组+链表, JDK1.8开始是数组+链表+红黑树)
     1. 底层维护的是 Node 类型的数组 table
     
     2. 当添加 key-value 时, 通过 key 的 hash 值得到在 table 中的索引, 判断索引处是否有元素, 如果没有元素直接添加, 如果有, 通过 equals() 方法判断两个 key 是否相等, 如果相等则直接替换 value, 如果不相等, 判断是树结构还是链表结构. 如果添加元素时发现容量不够则扩容
     
     3. 当创建对象时, 会初始化加载因子 (loadfactor) 为 0.75, 第一次添加元素扩容 table 容量为 16, 临界值 (threshold) 为 16x0.75=12
     
-    4. 以后扩容 table 容量为原来的2倍, 加载因子也为原来的2倍
+    4. 以后扩容 table 容量为原来的2倍, 扩容的临界值为原来的2倍
     
     5. 在 JDK1.8 中如果一条链表的元素超过8, 且 table 大小 超过 64 则会进行树化(红黑树)
     
