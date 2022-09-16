@@ -67,3 +67,29 @@ char(4) 和 varchar(4)  4表示的是字符,而不是字节, 不区分字符是�
 17. 不要有超过5个以上的表连接
 18. inner join 、left join、right join，优先使用inner join
 
+
+
+# 建表(表设计)需要注意什么
+
++ 库名、表名、字段名必须使用小写字母，“_”分割。
++ 库名、表名、字段名必须不超过12个字符。
++ 库名、表名、字段名见名知意,建议使用名词而不是动词。
++ 建议使用InnoDB存储引擎。
++ 存储精确浮点数必须使用DECIMAL替代FLOAT和DOUBLE。
++ 建议使用UNSIGNED存储非负数值。
++ 建议使用INT UNSIGNED存储IPV4。
++ 整形定义中不添加长度，比如使用INT，而不是INT(4)。
++ 使用短数据类型，比如取值范围为0-80时，使用TINYINT UNSIGNED。
++ 不建议使用ENUM类型，使用TINYINT来代替。
++ 尽可能不使用TEXT、BLOB类型。
++ VARCHAR(N)，N表示的是字符数不是字节数，比如VARCHAR(255)，可以最大可存储255个汉字，需要根据实际的宽度来选择N。
++ VARCHAR(N)，N尽可能小，因为MySQL一个表中所有的VARCHAR字段最大长度是65535个字节，进行排序和创建临时表一类的内存操作时，会使用N的长度申请内存。
++ 表字符集选择UTF8。
++ 使用VARBINARY存储变长字符串。
++ 存储年使用YEAR类型。
++ 存储日期使用DATE类型。
++ 存储时间（精确到秒）建议使用TIMESTAMP类型，因为TIMESTAMP使用4字节，DATETIME使用8个字节。
++ 建议字段定义为NOT NULL。
++ 将过大字段拆分到其他表中。
++ 禁止在数据库中使用VARBINARY、BLOB存储图片、文件等。
+
