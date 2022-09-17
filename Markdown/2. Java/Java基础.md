@@ -273,6 +273,10 @@
 
 # 五, 多线程
 
+![image-20220917223321098](https://raw.githubusercontent.com/blank-wz/typoraimage/main/images/2022/09/17/0154715f774159688677b953ca62e2cc-image-20220917223321098-34ed9c.png)
+
+
+
 ## 5.1 sleep() 与 wait() 的区别
 
 1. sleep() 
