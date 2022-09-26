@@ -101,7 +101,7 @@
 ## 2.7 ArrayList 和 LinkedList 的优缺点/区别
 
 1. ArrayList 底层基于动态数组实现，LinkedList 底层基于链表实现。
-2. 对于按 index 索引数据（get/set方法）：ArrayList 通过 index 直接定位到数组对应位置的节点，而 LinkedList需要从头结点或尾节点开始遍历，直到寻找到目标节点，因此在效率上 ArrayList 优于 LinkedList。
+2. 对于按 index 索引数据（get/set方法）：ArrayList 通过 index 直接定位到数组对应位置的节点，而 LinkedList需要从头节点或尾节点开始遍历，直到寻找到目标节点，因此在效率上 ArrayList 优于 LinkedList。
 3. 对于随机插入和删除：ArrayList 需要移动目标节点后面的节点（使用System.arraycopy 方法移动节点），而 LinkedList 只需修改目标节点前后节点的 next 或 prev 属性即可，因此在效率上 LinkedList 优于 ArrayList。
 4. 对于顺序插入和删除：由于 ArrayList 不需要移动节点，因此在效率上比 LinkedList 更好。这也是为什么在实际使用中 ArrayList 更多，因为大部分情况下我们的使用都是顺序插入
 
