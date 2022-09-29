@@ -277,6 +277,12 @@
 
 
 
+上下文切换
+
+上下文切换指的是[内核](https://baike.baidu.com/item/内核/108410?fromModule=lemma_inlink)（操作系统的核心）在[CPU](https://baike.baidu.com/item/CPU/120556?fromModule=lemma_inlink)上对进程或者线程进行切换。上下文切换过程中的信息被保存在[进程控制块](https://baike.baidu.com/item/进程控制块/7205297?fromModule=lemma_inlink)（PCB-Process Control Block）中。PCB又被称作切换帧（SwitchFrame）。上下文切换的信息会一直被保存在CPU的内存中，直到被再次使用。
+
+
+
 ## 5.1 sleep() 与 wait() 的区别
 
 1. sleep() 
