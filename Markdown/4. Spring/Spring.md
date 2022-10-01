@@ -71,6 +71,8 @@
 
 ## 3.2 Spring Bean 的生命周期
 
+![Spring bean 的生命周期](https://raw.githubusercontent.com/blank-wz/typoraimage/main/images/2022/10/01/2381a5f06b51f6f08376ad90bbbb57bd-Spring%20bean%20%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F-0c7177.jpg)
+
 Spring Bean的生命周期分为`四个阶段`和`多个扩展点`。扩展点又可以分为`影响多个Bean`和`影响单个Bean`
 
 + 四个阶段
