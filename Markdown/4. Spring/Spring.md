@@ -41,7 +41,7 @@
 
      + **@Mapper是MyBatis的注解，@Repository是Spring中的注解，这些注解就是声明一个Bean。**
      + **@Mapper注解不需要在SpringBoot启动类上配置扫描类；通过xml里面的namespace里面的接口地址，生成bean对象后注入到Service里面。也可以在启动类上添加@MapperScan("")，并且指明扫描的位置 **
-     + **@Repository需要 @MapperScan 配置扫描地址，然后dao层生成的bean才能被注入到Service层进行使用.**
+     + **@Repository 不能单独使用, 需要在 XML 配置文件中启用 Bean 的自动扫描功能，这可以通过\<context:component-scan/>实现**
 
    + @Service：service层（业务层）
 
