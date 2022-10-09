@@ -74,7 +74,7 @@
 1. Collection接口的子接口包括：Set接口和List接口
 2. Set接口的实现类主要有：HashSet、TreeSet、LinkedHashSet等
 3. List接口的实现类主要有：ArrayList、LinkedList、Stack以及Vector等
-4. Map接口的实现类主要有：HashMap、TreeMap、Hashtable、ConcurrentHashMap以及Properties等
+4. Map接口的实现类主要有：HashMap、LinkedHashMap、TreeMap、Hashtable、ConcurrentHashMap以及Properties等
 
 
 

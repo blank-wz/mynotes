@@ -165,7 +165,7 @@ char(4) 和 varchar(4)  4表示的是字符,而不是字节, 不区分字符是�
 
 1. 聚集索引（主键索引）：在数据库里面，所有行数都会按照主键索引进行排序。
 2. 非聚集索引：就是给普通字段加上索引。
-3. 联合索引：就是好几个字段组成的索引，称为联合索引。
+3. 组合索引：就是好几个字段组成的索引，称为组合索引。
 
 ```
 key ``'idx_age_name_sex'` `(``'age'``,``'name'``,``'sex'``)
@@ -205,7 +205,7 @@ A:select * from student where  concat('name','哈') ='王哈哈';
 B:select * from student where name = concat('王哈','哈');
 ```
 
-4. 索引列用了!= 不走索引
+4. 索引列用了!= , <>不走索引
 
 ```
 select * from student where age != 18
