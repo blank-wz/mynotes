@@ -305,10 +305,6 @@
 
 # 五, 多线程
 
-![image-20220917223321098](https://raw.githubusercontent.com/blank-wz/typoraimage/main/images/2022/09/17/0154715f774159688677b953ca62e2cc-image-20220917223321098-34ed9c.png)
-
-
-
 上下文切换
 
 上下文切换指的是[内核](https://baike.baidu.com/item/内核/108410?fromModule=lemma_inlink)（操作系统的核心）在[CPU](https://baike.baidu.com/item/CPU/120556?fromModule=lemma_inlink)上对进程或者线程进行切换。上下文切换过程中的信息被保存在[进程控制块](https://baike.baidu.com/item/进程控制块/7205297?fromModule=lemma_inlink)（PCB-Process Control Block）中。PCB又被称作切换帧（SwitchFrame）。上下文切换的信息会一直被保存在CPU的内存中，直到被再次使用。
@@ -371,6 +367,74 @@ setDaemon(true)
 1. 用户线程: 也叫工作线程, 当线程的任务执行完或通知方式结束
 2. 守护线程: 一般是为工作线程服务的, 当所有的用户线程结束, 守护线程自动结束
 3. 常见的守护线程: 垃圾回收机制
+
+getState
+
+​	获取线程状态
+
+````java
+public enum State {
+    /**
+     * Thread state for a thread which has not yet started.
+     */
+    NEW,
+    /**
+     * Thread state for a runnable thread.  A thread in the runnable
+     * state is executing in the Java virtual machine but it may
+     * be waiting for other resources from the operating system
+     * such as processor.
+     */
+    RUNNABLE,
+    /**
+     * Thread state for a thread blocked waiting for a monitor lock.
+     * A thread in the blocked state is waiting for a monitor lock
+     * to enter a synchronized block/method or
+     * reenter a synchronized block/method after calling
+     * {@link Object#wait() Object.wait}.
+     */
+    BLOCKED,
+    /**
+     * Thread state for a waiting thread.
+     * A thread is in the waiting state due to calling one of the
+     * following methods:
+     * <ul>
+     *   <li>{@link Object#wait() Object.wait} with no timeout</li>
+     *   <li>{@link #join() Thread.join} with no timeout</li>
+     *   <li>{@link LockSupport#park() LockSupport.park}</li>
+     * </ul>
+     *
+     * <p>A thread in the waiting state is waiting for another thread to
+     * perform a particular action.
+     *
+     * For example, a thread that has called <tt>Object.wait()</tt>
+     * on an object is waiting for another thread to call
+     * <tt>Object.notify()</tt> or <tt>Object.notifyAll()</tt> on
+     * that object. A thread that has called <tt>Thread.join()</tt>
+     * is waiting for a specified thread to terminate.
+     */
+    WAITING,
+    /**
+     * Thread state for a waiting thread with a specified waiting time.
+     * A thread is in the timed waiting state due to calling one of
+     * the following methods with a specified positive waiting time:
+     * <ul>
+     *   <li>{@link #sleep Thread.sleep}</li>
+     *   <li>{@link Object#wait(long) Object.wait} with timeout</li>
+     *   <li>{@link #join(long) Thread.join} with timeout</li>
+     *   <li>{@link LockSupport#parkNanos LockSupport.parkNanos}</li>
+     *   <li>{@link LockSupport#parkUntil LockSupport.parkUntil}</li>
+     * </ul>
+     */
+    TIMED_WAITING,
+    /**
+     * Thread state for a terminated thread.
+     * The thread has completed execution.
+     */
+    TERMINATED;
+}
+````
+
+
 
 
 
