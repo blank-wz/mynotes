@@ -440,7 +440,7 @@ public enum State {
 
 # 5.4 线程的生命周期
 
-
+![](https://raw.githubusercontent.com/blank-wz/typoraimage/main/images/2022/09/17/0154715f774159688677b953ca62e2cc-image-20220917223321098-34ed9c.png)
 
 
 
