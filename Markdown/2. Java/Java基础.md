@@ -85,7 +85,7 @@
   1. **List** (对付顺序的好帮手) ：一个有序, 容器元素可以重复，可以插入多个null元素，元素都有索引。常用的实现类有 ArrayList、LinkedList 和 Vector
   2. **Set** (注重独一无二的性质) ：一个无序, 容器不可以存储重复元素，只允许存入一个null元素，必须保证元素唯一性。Set 接口常用实现类是 HashSet、LinkedHashSet 以及 TreeSet
 
-+ **Map ** (用Key来搜索的专业户) 是一个键值对集合，存储键、值和之间的映射。 Key无序，唯一；value 不要求有序，允许重复。Map 的常用实现类：HashMap、TreeMap、HashTable、LinkedHashMap、ConcurrentHashMap
++ **Map ** (用Key来搜索的专业户) 是一个键值对集合，存储键和值之间的映射。 Key无序，唯一；value 不要求有序，允许重复。Map 的常用实现类：HashMap、TreeMap、HashTable、LinkedHashMap、ConcurrentHashMap
 
 
 
