@@ -211,10 +211,10 @@ B:select * from student where name = concat('王哈','哈');
 select * from student where age != 18
 ```
 
-5. 索引字段进行判空查询时。也就是对索引字段判断是否为NULL时
+5. 索引字段进行判空查询时。也就是对索引字段判断是否不为NULL时
 
 ```
-select * from student where name is null
+select * from student where name is not null
 ```
 
 6. 随着表的增长，where条件出来的数据太多，大于15%，使得索引失效
