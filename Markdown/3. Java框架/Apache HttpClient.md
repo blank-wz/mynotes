@@ -287,7 +287,7 @@ public void testPost2() {
     JSONObject jsonObject = new JSONObject();
     jsonObject.put("userName", "王大锤");
     jsonObject.put("password", "mima");
-    StringEntity stringEntity = new StringEntity(jsonObject.toString(), Consts.UTF_8)
+    StringEntity stringEntity = new StringEntity(jsonObject.toString(), Consts.UTF_8);
     // 也需要给entity设置一下内容类型
     stringEntity.setContentType(new BasicHeader("Content-Type", "application/json"));
     // 设置要给entity的编码
