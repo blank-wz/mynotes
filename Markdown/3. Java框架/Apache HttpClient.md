@@ -205,7 +205,7 @@ if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode()) {
   | 信息头                    | 含义         | 举例                                                         |
   | ------------------------- | ------------ | ------------------------------------------------------------ |
   | MIME-Version              | MIME版本     | 1.0                                                          |
-  | Content-Type              | 内容类型     | application/json, application/x-www-form-urlencoded, multipart/form-data |
+  | Content-Type              | 内容类型     | application/x-www-form-urlencoded, application/json, multipart/form-data |
   | Content-Transfer-Encoding | 编码格式     | 8bit, binary                                                 |
   | Content-Disposition       | 内容排列方式 | 上传文件时:<br/>Content-Disposition: form-data; name="fileName"; filename="C\Users\lenovo\Desktop\a.html"<br/>下载文件时需要设置:<br/>Content-Disposition: attachment; filename=URLEncoder.encode("xx.zip", "UTF-8") |
 
