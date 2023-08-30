@@ -167,7 +167,7 @@ char(4) 和 varchar(4)  4表示的是字符,而不是字节, 不区分字符是�
 2. 非聚集索引：就是给普通字段加上索引。
 3. 组合索引：就是好几个字段组成的索引，称为组合索引。
 
-```
+```sql
 key ``'idx_age_name_sex'` `(``'age'``,``'name'``,``'sex'``)
 ```
 
@@ -177,7 +177,7 @@ key ``'idx_age_name_sex'` `(``'age'``,``'name'``,``'sex'``)
 
 表student中两个字段age,name加了索引
 
-```
+```sql
 key ``'idx_age'``(``'age'``),
 key ``'idx_name'` `(``'name'``)
 ```
@@ -186,34 +186,34 @@ key ``'idx_name'` `(``'name'``)
 
 1. Like这种就是%在前面的不走索引，在后面的走索引（A走索引，B不走索引）
 
-```
+```sql
 A:select * from student where 'name' like '王%'
 B:select * from student where 'name' like '%小'
 ```
 
 2. 用索引列进行计算的，不走索引（A走索引，B不走索引）
 
-```
+```sql
 A:select * from student where age = 10+8
 B:select * from student where age + 8 = 18
 ```
 
 3. 对索引列用函数了，不走索引（A不走索引，B走索引）
 
-```
+```sql
 A:select * from student where  concat('name','哈') ='王哈哈';
 B:select * from student where name = concat('王哈','哈');
 ```
 
 4. 索引列用了!= , <>不走索引
 
-```
+```sql
 select * from student where age != 18
 ```
 
 5. 索引字段进行判空查询时。也就是对索引字段判断是否不为NULL时
 
-```
+```sql
 select * from student where name is not null
 ```
 
@@ -221,6 +221,6 @@ select * from student where name is not null
 
 7. 避免在where子句中使用`or`来连接条件,因为如果俩个字段中有一个没有索引的话,引擎会放弃索引而产生全表扫描
 
-```
+```sql
 SELECT id FROM table WHERE num = 0 OR num = 1
 ```
